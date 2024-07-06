@@ -153,7 +153,7 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-          
+
               const Padding(
                 padding: EdgeInsets.only(left: 35.0,top: 23.0,bottom: 11.0),
                 child: Row(
@@ -211,8 +211,8 @@ class _DashboardState extends State<Dashboard> {
                   ),
                 ),
               ),
-        
-        
+
+
               const Padding(
                 padding: EdgeInsets.only(left: 35.0,top: 23.0,bottom: 11.0),
                 child: Row(
