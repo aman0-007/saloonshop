@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 class ShopInfo extends StatefulWidget {
   const ShopInfo({super.key});
@@ -69,7 +70,7 @@ class _ShopInfoState extends State<ShopInfo> {
               bottom: 0.0,
               child: Container(
                 width: deviceWidth,
-                height: deviceHeight * 0.63,
+                height: deviceHeight * 0.66,
                 decoration: BoxDecoration(
                   color: Colors.grey[100], // Light grey background color
                   borderRadius: const BorderRadius.only(topLeft: Radius.circular(50),topRight: Radius.circular(50)), // Circular edges
@@ -78,11 +79,115 @@ class _ShopInfoState extends State<ShopInfo> {
                     width: 2.0, // Increased border width
                   ),
                 ),
-                child: const SingleChildScrollView(
-                  child: Column(
-                    children: [
-        
-                    ],
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 20.0,left: 33.0),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                              Container(
+                              width: deviceWidth*0.17,
+                              height: deviceHeight*0.05,
+                              decoration: BoxDecoration(
+                                color: Colors.grey.withOpacity(0.5),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: deviceHeight*0.005),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text("AMAN DWIVEDI",style: TextStyle(color: Colors.grey,fontWeight: FontWeight.bold,fontSize: 19),),
+                          ],
+                        ),
+                        SizedBox(height: deviceHeight*0.004),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Icon(Icons.star,color: Colors.grey,),
+                            SizedBox(width: deviceWidth*0.007,),
+                            Text("4.9",style: TextStyle(color: Colors.grey[600],fontWeight: FontWeight.bold),),
+                            SizedBox(width: deviceWidth*0.01,),
+                            Icon(Icons.circle,color: Colors.grey,size: 7,),
+                            SizedBox(width: deviceWidth*0.01,),
+                            Text("114 reviews", style: TextStyle(color: Colors.grey),)
+                          ],
+                        ),
+                        SizedBox(height: deviceHeight*0.02),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              width: deviceWidth * 0.77,
+                              height: deviceHeight * 0.09,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[300], // Light grey background color
+                                borderRadius: BorderRadius.circular(10), // Circular edges
+                                border: Border.all(
+                                  color: Colors.grey[400]!, // Dark grey border color
+                                  width: 2.0, // Increased border width
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: deviceHeight*0.04),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            IntrinsicHeight(
+                              child: Container(
+                                width: deviceWidth * 0.77,
+                                padding: const EdgeInsets.all(20),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[300], // Light grey background color
+                                  borderRadius: BorderRadius.circular(10), // Circular edges
+                                  border: Border.all(
+                                    color: Colors.grey[400]!, // Dark grey border color
+                                    width: 2.0, // Increased border width
+                                  ),
+                                ),
+                                child: SingleChildScrollView(
+                                    child: Column(
+                                      children: [
+                                        SizedBox(height: deviceHeight*0.03,),
+                                        Divider(
+                                          color: Colors.grey,
+                                          thickness: 1,
+                                        ),
+                                        SizedBox(height: deviceHeight*0.03,),
+                                        Divider(
+                                          color: Colors.grey,
+                                          thickness: 1,
+                                        ),
+                                        SizedBox(height: deviceHeight*0.03,),
+                                        Divider(
+                                          color: Colors.grey,
+                                          thickness: 1,
+                                        ),
+                                        SizedBox(height: deviceHeight*0.03,),
+                                        Divider(
+                                          color: Colors.grey,
+                                          thickness: 1,
+                                        ),
+                                      ],
+                                    )
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+
+                      ],
+                    ),
                   ),
                 ),
               ),
