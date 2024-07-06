@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saloonshop/ownerside.dart';
 import 'package:saloonshop/shoplogin.dart';
 
 class Accountoptionpage extends StatefulWidget {
@@ -25,7 +26,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                   Future.delayed(const Duration(seconds: 3), () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Shoplogin()),
+                      MaterialPageRoute(builder: (context) => const Ownerside()),
                     );
                   });
                 },
