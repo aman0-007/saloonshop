@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:saloonshop/location.dart';
+import 'package:saloonshop/savedata.dart';
 
 class Ownerside extends StatefulWidget {
   const Ownerside({super.key});
@@ -16,47 +16,8 @@ class _OwnersideState extends State<Ownerside> {
   bool _isTextFieldFocused = false;
   Position? _currentPosition;
 
-  Future<void> requestLocationPermission() async {
-    var status = await Permission.location.request();
-    if (status.isDenied) {
-      // Handle the case when the user denies the permission
-    }
-  }
-
-  Future<void> getCurrentLocation() async {
-    await requestLocationPermission();
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-    setState(() {
-      _currentPosition = position;
-    });
-  }
-
-  Future<void> saveShopOwnerDetails() async {
-    if (_currentPosition == null) {
-      // Show a message if location is not fetched
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please get the location first.")),
-      );
-      return;
-    }
-
-    await FirebaseFirestore.instance.collection('shoplocation').add({
-      'shopName': _shopNameController.text,
-      'description': _shopDescriptionController.text,
-      'location': GeoPoint(_currentPosition!.latitude, _currentPosition!.longitude),
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Shop details and location saved successfully")),
-    );
-
-    // Clear the text fields after saving
-    _shopNameController.clear();
-    _shopDescriptionController.clear();
-    setState(() {
-      _currentPosition = null;
-    });
-  }
+  Location _locationService = Location();
+  Savedata _dataService = Savedata();
 
   @override
   Widget build(BuildContext context) {
@@ -180,7 +141,11 @@ class _OwnersideState extends State<Ownerside> {
                       SizedBox(height: deviceHeight * 0.01),
                       ElevatedButton(
                         onPressed: () async {
-                          await getCurrentLocation();
+                          await _locationService.getCurrentLocation((position) {
+                            setState(() {
+                              _currentPosition = position;
+                            });
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey, // Button color
@@ -198,7 +163,15 @@ class _OwnersideState extends State<Ownerside> {
                       SizedBox(height: deviceHeight * 0.033),
                       ElevatedButton(
                         onPressed: () async {
-                          await saveShopOwnerDetails();
+                          await _dataService.saveShopOwnerDetails(
+                            context: context,
+                            shopNameController: _shopNameController,
+                            shopDescriptionController: _shopDescriptionController,
+                            currentPosition: _currentPosition,
+                          );
+                          setState(() {
+                            _currentPosition = null;
+                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey, // Button color
