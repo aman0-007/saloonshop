@@ -8,7 +8,6 @@ class Savedata {
     required TextEditingController shopNameController,
     required TextEditingController shopDescriptionController,
     required Position? currentPosition,
-    required List<String> selectedDays,
   }) async {
     if (currentPosition == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -30,7 +29,6 @@ class Savedata {
         'shopName': shopNameController.text,
         'description': shopDescriptionController.text,
         'location': GeoPoint(currentPosition.latitude, currentPosition.longitude),
-        'daysOpen': selectedDays,
       });
 
       // Show success message

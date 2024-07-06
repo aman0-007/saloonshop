@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
-
 class ShopInfo extends StatefulWidget {
   const ShopInfo({super.key});
 
@@ -229,8 +227,6 @@ class _ShopInfoState extends State<ShopInfo> {
                             ),
                           ],
                         ),
-
-
                       ],
                     ),
                   ),

@@ -14,30 +14,21 @@ class Ownerside extends StatefulWidget {
 class _OwnersideState extends State<Ownerside> {
   final TextEditingController _shopNameController = TextEditingController();
   final TextEditingController _shopDescriptionController = TextEditingController();
+  final TextEditingController _shopOpeningTime = TextEditingController();
+  final TextEditingController _shopClosingTime = TextEditingController();
+
   bool _isTextFieldFocused = false;
   Position? _currentPosition;
 
   final ULocation _locationService = ULocation();
   final Savedata _dataService = Savedata();
 
-  List<String> _selectedDays = [];
 
-  final List<String> _weekDays = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
-  ];
 
   @override
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double deviceHeight = MediaQuery.of(context).size.height;
-
-    final items = _weekDays.map((day) => MultiSelectItem<String>(day, day)).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -155,40 +146,89 @@ class _OwnersideState extends State<Ownerside> {
                         },
                       ),
                       SizedBox(height: deviceHeight * 0.01),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Row(
                         children: [
-                          const SizedBox(height: 20),
-                          MultiSelectDialogField(
-                            items: items,
-                            title: const Text('Select Days Open'),
-                            selectedColor: Colors.blue,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(5)),
-                              border: Border.all(
-                                color: Colors.grey.withOpacity(0.5),
-                                width: 1.0,
+                          TextField(
+                            controller: _shopOpeningTime,
+                            decoration: InputDecoration(
+                              hintText: 'Opening Time',
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.withOpacity(0.1),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
+                                borderRadius: BorderRadius.circular(5),
                               ),
                             ),
-                            buttonIcon: const Icon(
-                              Icons.calendar_today,
-                              color: Colors.grey,
-                            ),
-                            buttonText: Text(
-                              "Select Days Open",
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 16,
-                              ),
-                            ),
-                            onConfirm: (results) {
+                            onTap: () {
                               setState(() {
-                                _selectedDays = results.cast<String>();
+                                _isTextFieldFocused = true;
                               });
+                            },
+                            onSubmitted: (value) {
+                              setState(() {
+                                _isTextFieldFocused = false;
+                              });
+                            },
+                            onChanged: (value) {
+                              // Handle text changes
+                            },
+                          ),
+
+                          Text("-"),
+                          TextField(
+                            controller: _shopClosingTime,
+                            decoration: InputDecoration(
+                              hintText: 'Closing Time',
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.withOpacity(0.1),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                            ),
+                            onTap: () {
+                              setState(() {
+                                _isTextFieldFocused = true;
+                              });
+                            },
+                            onSubmitted: (value) {
+                              setState(() {
+                                _isTextFieldFocused = false;
+                              });
+                            },
+                            onChanged: (value) {
+                              // Handle text changes
                             },
                           ),
                         ],
                       ),
+
                       SizedBox(height: deviceHeight * 0.01),
                       ElevatedButton(
                         onPressed: () async {
@@ -219,7 +259,6 @@ class _OwnersideState extends State<Ownerside> {
                             shopNameController: _shopNameController,
                             shopDescriptionController: _shopDescriptionController,
                             currentPosition: _currentPosition,
-                            selectedDays: _selectedDays, // Pass selected days here
                           );
                           setState(() {
                             _currentPosition = null;
