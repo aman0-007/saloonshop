@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+<<<<<<< HEAD
 
     <key>NSLocationWhenInUseUsageDescription</key>
     <string>Your app needs access to location services to function properly when in use.</string>
@@ -9,6 +10,8 @@
     <string>Your app needs access to location services to function properly in the background.</string>
 
 
+=======
+>>>>>>> origin/main
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>

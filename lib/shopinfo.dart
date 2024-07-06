@@ -26,41 +26,41 @@ class _ShopInfoState extends State<ShopInfo> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop(); // Close current page
-                        },
-                        child: Container(
-                          width: 50, // Adjust width as needed
-                          height: 50, // Adjust height as needed
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100], // Light grey background color
-                            borderRadius: BorderRadius.circular(100), // Circular edges
-                            border: Border.all(
-                              color: Colors.grey[400]!, // Dark grey border color
-                              width: 2.0, // Increased border width
-                            ),
+                      onTap: () {
+                        Navigator.of(context).pop(); // Close current page
+                      },
+                      child: Container(
+                        width: 50, // Adjust width as needed
+                        height: 50, // Adjust height as needed
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100], // Light grey background color
+                          borderRadius: BorderRadius.circular(100), // Circular edges
+                          border: Border.all(
+                            color: Colors.grey[400]!, // Dark grey border color
+                            width: 2.0, // Increased border width
                           ),
-                          child: const Icon(Icons.arrow_back, color: Colors.grey),
                         ),
+                        child: const Icon(Icons.arrow_back, color: Colors.grey),
                       ),
+                    ),
                     const SizedBox(width: 290,),
                     GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop(); // Close current page
-                        },
-                        child: Container(
-                          width: 50, // Adjust width as needed
-                          height: 50, // Adjust height as needed
-                          decoration: BoxDecoration(
-                            color: Colors.grey[100], // Light grey background color
-                            borderRadius: BorderRadius.circular(100), // Circular edges
-                            border: Border.all(
-                              color: Colors.grey[400]!, // Dark grey border color
-                              width: 2.0, // Increased border width
-                            ),
+                      onTap: () {
+                        Navigator.of(context).pop(); // Close current page
+                      },
+                      child: Container(
+                        width: 50, // Adjust width as needed
+                        height: 50, // Adjust height as needed
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100], // Light grey background color
+                          borderRadius: BorderRadius.circular(100), // Circular edges
+                          border: Border.all(
+                            color: Colors.grey[400]!, // Dark grey border color
+                            width: 2.0, // Increased border width
                           ),
-                          child: const Icon(Icons.label_important_rounded, color: Colors.grey),
                         ),
+                        child: const Icon(Icons.label_important_rounded, color: Colors.grey),
+                      ),
                     ),
                   ],
                 ),
@@ -87,7 +87,7 @@ class _ShopInfoState extends State<ShopInfo> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                              Container(
+                            Container(
                               width: deviceWidth*0.17,
                               height: deviceHeight*0.05,
                               decoration: BoxDecoration(
