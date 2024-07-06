@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saloonshop/accountoptionpage.dart';
-import 'package:saloonshop/dashboard.dart';
+import 'package:saloonshop/ownerside.dart';
 import 'package:saloonshop/shopinfo.dart';
 
 void main() {
@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const ShopInfo(),
+      home: const Ownerside(),
     );
   }
 }
