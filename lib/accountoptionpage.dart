@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:saloonshop/ownerside.dart';
-import 'package:saloonshop/shoplogin.dart';
+import 'package:saloonshop/dashboard.dart';
+import 'package:saloonshop/userlogin.dart';
 
 class Accountoptionpage extends StatefulWidget {
   const Accountoptionpage({super.key});
@@ -26,7 +26,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                   Future.delayed(const Duration(seconds: 3), () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const Ownerside()),
+                      MaterialPageRoute(builder: (context) => const UserLogin()),
                     );
                   });
                 },

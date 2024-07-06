@@ -1,7 +1,7 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-class Location {
+class ULocation {
   Future<void> requestLocationPermission() async {
     var status = await Permission.location.request();
     if (status.isDenied) {

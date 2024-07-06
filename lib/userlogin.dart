@@ -1,43 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:saloonshop/saveuserdata.dart';
 import 'package:saloonshop/location.dart';
-import 'package:saloonshop/savedata.dart';
-import 'package:multi_select_flutter/multi_select_flutter.dart';
 
-class Ownerside extends StatefulWidget {
-  const Ownerside({super.key});
+
+class UserLogin extends StatefulWidget {
+  const UserLogin({super.key});
 
   @override
-  State<Ownerside> createState() => _OwnersideState();
+  _UserLoginState createState() => _UserLoginState();
 }
 
-class _OwnersideState extends State<Ownerside> {
-  final TextEditingController _shopNameController = TextEditingController();
-  final TextEditingController _shopDescriptionController = TextEditingController();
+class _UserLoginState extends State<UserLogin> {
   bool _isTextFieldFocused = false;
+  bool _isPasswordVisible = false;
+  final TextEditingController _passwordController = TextEditingController();
   Position? _currentPosition;
 
   final ULocation _locationService = ULocation();
-  final Savedata _dataService = Savedata();
-
-  List<String> _selectedDays = [];
-
-  final List<String> _weekDays = [
-    'Monday',
-    'Tuesday',
-    'Wednesday',
-    'Thursday',
-    'Friday',
-    'Saturday',
-    'Sunday'
-  ];
+  final SaveUserData _userDataService = SaveUserData(); // Updated service instance
 
   @override
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double deviceHeight = MediaQuery.of(context).size.height;
-
-    final items = _weekDays.map((day) => MultiSelectItem<String>(day, day)).toList();
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -45,6 +31,15 @@ class _OwnersideState extends State<Ownerside> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SizedBox(height: deviceHeight * 0.17),
+            Container(
+              child: Image.asset(
+                "assets/logo/shop.png",
+                width: 150,
+                height: 150,
+              ),
+            ),
+            SizedBox(height: deviceHeight * 0.07),
             Center(
               child: IntrinsicHeight(
                 child: Container(
@@ -69,7 +64,7 @@ class _OwnersideState extends State<Ownerside> {
                   child: Column(
                     children: [
                       const Text(
-                        "Add Details",
+                        "Login",
                         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                       ),
                       const Divider(
@@ -78,9 +73,8 @@ class _OwnersideState extends State<Ownerside> {
                       ),
                       SizedBox(height: deviceHeight * 0.03),
                       TextField(
-                        controller: _shopNameController,
                         decoration: InputDecoration(
-                          hintText: 'Shop Name',
+                          hintText: 'Username',
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
@@ -116,80 +110,63 @@ class _OwnersideState extends State<Ownerside> {
                         },
                       ),
                       SizedBox(height: deviceHeight * 0.01),
-                      TextField(
-                        controller: _shopDescriptionController,
-                        decoration: InputDecoration(
-                          hintText: 'Shop Description',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
-                              width: 1.0,
-                            ),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 2.0,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey.withOpacity(0.1),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _isTextFieldFocused = true;
-                          });
-                        },
-                        onSubmitted: (value) {
-                          setState(() {
-                            _isTextFieldFocused = false;
-                          });
-                        },
-                        onChanged: (value) {
-                          // Handle text changes
-                        },
-                      ),
-                      SizedBox(height: deviceHeight * 0.01),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                      Stack(
+                        alignment: Alignment.centerRight,
                         children: [
-                          const SizedBox(height: 20),
-                          MultiSelectDialogField(
-                            items: items,
-                            title: const Text('Select Days Open'),
-                            selectedColor: Colors.blue,
-                            decoration: BoxDecoration(
-                              borderRadius: const BorderRadius.all(Radius.circular(5)),
-                              border: Border.all(
-                                color: Colors.grey.withOpacity(0.5),
-                                width: 1.0,
+                          TextField(
+                            controller: _passwordController,
+                            obscureText: !_isPasswordVisible,
+                            decoration: InputDecoration(
+                              hintText: 'Password',
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
+                                  width: 1.0,
+                                ),
+                              ),
+                              focusedBorder: const OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: Colors.grey,
+                                  width: 2.0,
+                                ),
+                              ),
+                              filled: true,
+                              fillColor: Colors.grey.withOpacity(0.1),
+                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
+                                borderRadius: BorderRadius.circular(5),
                               ),
                             ),
-                            buttonIcon: const Icon(
-                              Icons.calendar_today,
-                              color: Colors.grey,
-                            ),
-                            buttonText: Text(
-                              "Select Days Open",
-                              style: TextStyle(
-                                color: Colors.grey[700],
-                                fontSize: 16,
-                              ),
-                            ),
-                            onConfirm: (results) {
+                            onTap: () {
                               setState(() {
-                                _selectedDays = results.cast<String>();
+                                _isTextFieldFocused = true;
+                              });
+                            },
+                            onSubmitted: (value) {
+                              setState(() {
+                                _isTextFieldFocused = false;
+                              });
+                            },
+                            onChanged: (value) {
+                              // Handle text changes
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                              color: Colors.grey.withOpacity(0.7),
+                            ),
+                            onPressed: () {
+                              setState(() {
+                                _isPasswordVisible = !_isPasswordVisible;
                               });
                             },
                           ),
                         ],
                       ),
-                      SizedBox(height: deviceHeight * 0.01),
+                      SizedBox(height: deviceHeight * 0.033),
+
                       ElevatedButton(
                         onPressed: () async {
                           await _locationService.getCurrentLocation((position) {
@@ -211,19 +188,14 @@ class _OwnersideState extends State<Ownerside> {
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
-                      SizedBox(height: deviceHeight * 0.033),
+
                       ElevatedButton(
                         onPressed: () async {
-                          await _dataService.saveShopOwnerDetails(
+                          await _userDataService.saveUserLoginDetails(
                             context: context,
-                            shopNameController: _shopNameController,
-                            shopDescriptionController: _shopDescriptionController,
+                            password: _passwordController.text,
                             currentPosition: _currentPosition,
-                            selectedDays: _selectedDays, // Pass selected days here
                           );
-                          setState(() {
-                            _currentPosition = null;
-                          });
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey, // Button color
@@ -234,11 +206,10 @@ class _OwnersideState extends State<Ownerside> {
                           ),
                         ),
                         child: const Text(
-                          'Submit',
+                          'Login',
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
-
                     ],
                   ),
                 ),
