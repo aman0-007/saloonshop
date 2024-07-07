@@ -277,7 +277,6 @@ class _OwnersideState extends State<Ownerside> {
                           style: TextStyle(fontSize: 18),
                         ),
                       ),
-
                     ],
                   ),
                 ),
