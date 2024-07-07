@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:saloonshop/dashboard.dart';
+import 'package:saloonshop/authentication.dart';
+import 'package:saloonshop/ownerside.dart';
 
 class Shoplogin extends StatefulWidget {
   const Shoplogin({super.key});
@@ -12,6 +14,9 @@ class _ShoploginState extends State<Shoplogin> {
   bool _isTextFieldFocused = false;
   bool _isPasswordVisible = false;
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+
+  final Authentication _authentication = Authentication();
 
   @override
   Widget build(BuildContext context) {
@@ -65,6 +70,7 @@ class _ShoploginState extends State<Shoplogin> {
                       ),
                       SizedBox(height: deviceHeight * 0.03),
                       TextField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           hintText: 'Username',
                           border: OutlineInputBorder(
@@ -159,11 +165,17 @@ class _ShoploginState extends State<Shoplogin> {
                       ),
                       SizedBox(height: deviceHeight * 0.033),
                       ElevatedButton(
-                        onPressed: () {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(builder: (context) => const Dashboard()),
-                          );
+                        onPressed: () async {
+                          String email = _emailController.text;
+                          String password = _passwordController.text;
+                          User? user = await _authentication.signInWithEmailAndPassword(email, password);
+                          if (user != null) {
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) =>  const Ownerside()),
+                            );
+                          }
                         },
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.grey, // Button color

@@ -1,28 +1,21 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:saloonshop/authentication.dart';
-import 'package:saloonshop/dashboard.dart';
-import 'package:saloonshop/ownerside.dart';
-import 'package:saloonshop/saveuserdata.dart';
-import 'package:saloonshop/location.dart';
+import 'package:saloonshop/shoplogin.dart';
+import 'package:saloonshop/userlogin.dart';
 
-class UserLogin extends StatefulWidget {
-  const UserLogin({super.key});
+class Register extends StatefulWidget {
+  const Register({super.key});
 
   @override
-  _UserLoginState createState() => _UserLoginState();
+  State<Register> createState() => _RegisterState();
 }
 
-class _UserLoginState extends State<UserLogin> {
+class _RegisterState extends State<Register> {
   bool _isTextFieldFocused = false;
   bool _isPasswordVisible = false;
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
-  Position? _currentPosition;
-
-  final ULocation _locationService = ULocation();
-  final SaveUserData _userDataService = SaveUserData();
 
   final Authentication _authentication = Authentication();
 
@@ -30,7 +23,6 @@ class _UserLoginState extends State<UserLogin> {
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double deviceHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -49,7 +41,7 @@ class _UserLoginState extends State<UserLogin> {
             Center(
               child: IntrinsicHeight(
                 child: Container(
-                  width: deviceWidth * 0.76,
+                  width: deviceWidth*0.76,
                   margin: const EdgeInsets.all(20),
                   padding: const EdgeInsets.all(20),
                   decoration: BoxDecoration(
@@ -175,57 +167,63 @@ class _UserLoginState extends State<UserLogin> {
                       SizedBox(height: deviceHeight * 0.033),
                       ElevatedButton(
                         onPressed: () async {
-                          await _locationService.getCurrentLocation((position) {
-                            setState(() {
-                              _currentPosition = position;
-                            });
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey, // Button color
-                          foregroundColor: Colors.black, // Text color
-                          padding: EdgeInsets.symmetric(vertical: deviceHeight * 0.013, horizontal: deviceWidth * 0.21),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        child: const Text(
-                          'Get Location',
-                          style: TextStyle(fontSize: 18),
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () async {
-                          await _userDataService.saveUserLoginDetails(
-                            context: context,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                            currentPosition: _currentPosition,
-                          );
-
                           String email = _emailController.text;
                           String password = _passwordController.text;
-                          User? user = await _authentication.signInWithEmailAndPassword(email, password);
-                          if (user != null) {
+                            try {
+                              await _authentication.registerWithEmailAndPassword(context,email, password);
 
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) =>  const Dashboard()),
-                            );
-                          }
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey, // Button color
-                          foregroundColor: Colors.black, // Text color
-                          padding: EdgeInsets.symmetric(vertical: deviceHeight * 0.013, horizontal: deviceWidth * 0.21),
-                          shape: RoundedRectangleBorder(
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Registeration Successful')),
+                              );
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const Shoplogin()),
+                              );
+                            } catch (e) {
+                              // Registration failed, handle error
+                              if (e is FirebaseAuthException) {
+                                switch (e.code) {
+                                  case 'email-already-in-use':
+                                  // Don't navigate, show error message
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('This email is already registered.')),
+                                    );
+                                    break;
+                                  case 'weak-password':
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Password is too weak. Please choose a stronger password.')),
+                                    );
+                                    break;
+                                  case 'invalid-email':
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Please enter a valid email address.')),
+                                    );
+                                    break;
+                                  default:
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Registration failed. Please try again later.')),
+                                    );
+                                }
+                              } else {
+                                // Other errors
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Registration failed. Please try again later.')),
+                                );
+                              }
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.grey, // Button color
+                            foregroundColor: Colors.black, // Text color
+                            padding: EdgeInsets.symmetric(vertical: deviceHeight*0.013, horizontal: deviceWidth*0.21),
+                            shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),
+                            ),
                           ),
-                        ),
-                        child: const Text(
-                          'Login',
-                          style: TextStyle(fontSize: 18),
-                        ),
+                          child: const Text(
+                            'Register',
+                            style: TextStyle(fontSize: 18),
+                          ),
                       ),
                     ],
                   ),

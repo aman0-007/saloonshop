@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:firebase_auth/firebase_auth.dart';  // Import FirebaseAuth package
 
 class SaveUserData {
-  FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseAuth auth = FirebaseAuth.instance;  // Initialize FirebaseAuth
 
   Future<void> saveUserLoginDetails({
     required BuildContext context,
+    required String email,
     required String password,
     required Position? currentPosition,
   }) async {
@@ -18,8 +21,19 @@ class SaveUserData {
     }
 
     try {
+      // Get current user ID
+      final User? user = auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("No user is currently logged in.")),
+        );
+        return;
+      }
+      final String userId = user.uid;
+
       // Save user login details and location to Firestore
-      await firestore.collection('users').add({
+      await firestore.collection('users').doc(userId).set({
+        'email': email,
         'password': password,
         'location': GeoPoint(currentPosition.latitude, currentPosition.longitude),
         // Add more user details as needed
