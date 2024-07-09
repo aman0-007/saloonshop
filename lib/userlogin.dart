@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:saloonshop/authentication.dart';
 import 'package:saloonshop/dashboard.dart';
-import 'package:saloonshop/ownerside.dart';
 import 'package:saloonshop/saveuserdata.dart';
 import 'package:saloonshop/location.dart';
 

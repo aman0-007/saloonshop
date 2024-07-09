@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saloonshop/accountoptionpage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:saloonshop/register.dart';
-import 'package:saloonshop/shoplogin.dart';
 import 'package:saloonshop/userlogin.dart';
 import 'firebase_options.dart';
 

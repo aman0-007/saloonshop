@@ -228,10 +228,10 @@ class Savedata {
       shopNameController.clear();
       shopDescriptionController.clear();
       shopOpenDaysController.clear();
-      services.forEach((service) {
+      for (var service in services) {
         (service['serviceName'] as TextEditingController).clear();
         (service['servicePrice'] as TextEditingController).clear();
-      });
+      }
     } catch (e) {
       // Handle any errors that occur during Firebase Storage or Firestore access
       ScaffoldMessenger.of(context).showSnackBar(

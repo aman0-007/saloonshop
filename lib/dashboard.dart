@@ -15,7 +15,7 @@ class _DashboardState extends State<Dashboard> {
   bool _isTextFieldFocused = false;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseAuth auth = FirebaseAuth.instance;
-  List<Map<String, dynamic>> _nearbyShops = [];
+  final List<Map<String, dynamic>> _nearbyShops = [];
 
   @override
   void initState() {
@@ -108,7 +108,7 @@ class _DashboardState extends State<Dashboard> {
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: const Row(
+                child: Row(
                   children: [
                     Text("Hey, ", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 27.0)),
                     Text("Aman", style: TextStyle(color: Colors.grey, fontWeight: FontWeight.bold, fontSize: 27.0))
@@ -207,7 +207,7 @@ class _DashboardState extends State<Dashboard> {
                           color: Colors.black.withOpacity(0.8), // Black with reduced opacity
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: Color.fromRGBO(128, 128, 128, 0.5), // Grey color with 50% opacity
+                            color: const Color.fromRGBO(128, 128, 128, 0.5), // Grey color with 50% opacity
                             width: 2.0,
                           ),
                         ),
@@ -227,7 +227,7 @@ class _DashboardState extends State<Dashboard> {
                                         shop['profileImageUrl'] ?? '',
                                         fit: BoxFit.cover,
                                         errorBuilder: (context, error, stackTrace) {
-                                          return Center(
+                                          return const Center(
                                             child: Icon(Icons.error, color: Colors.white),
                                           );
                                         },
@@ -250,11 +250,11 @@ class _DashboardState extends State<Dashboard> {
                                         color: _isOpenNow(shop['openingTime'], shop['closingTime']) ? Colors.green : Colors.red,
                                         size: 10, // Reduced size for icon
                                       ),
-                                      SizedBox(width: 5),
+                                      const SizedBox(width: 5),
                                       Text(
                                         _isOpenNow(shop['openingTime'], shop['closingTime']) ? 'OPEN NOW' : 'CLOSED NOW',
                                         style: TextStyle(
-                                          color: _isOpenNow(shop['openingTime'], shop['closingTime']) ? Color(0xfffdcb6e) : Colors.red, // Custom color for open now
+                                          color: _isOpenNow(shop['openingTime'], shop['closingTime']) ? const Color(0xfffdcb6e) : Colors.red, // Custom color for open now
                                           fontWeight: FontWeight.bold,
                                           fontSize: 12, // Reduced font size
                                         ),
@@ -263,28 +263,28 @@ class _DashboardState extends State<Dashboard> {
                                   ),
                                   Text(
                                     shop['shopName'] ?? 'Shop Name',
-                                    style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.white), // White color for shop name
+                                    style: const TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold, color: Colors.white), // White color for shop name
                                   ),
                                   const SizedBox(height: 5),
                                   Row(
                                     children: [
-                                      Icon(
+                                      const Icon(
                                         Icons.location_on,
                                         color: Colors.yellow,
                                         size: 12,
                                       ),
-                                      SizedBox(width: 5),
+                                      const SizedBox(width: 5),
                                       FutureBuilder<GeoPoint?>(
                                         future: getCurrentUserLocation(),
                                         builder: (context, snapshot) {
                                           if (snapshot.connectionState == ConnectionState.waiting) {
-                                            return Text(
+                                            return const Text(
                                               'Calculating distance...',
                                               style: TextStyle(fontSize: 12, color: Colors.white),
                                             );
                                           }
                                           if (snapshot.hasError || snapshot.data == null) {
-                                            return Text(
+                                            return const Text(
                                               'Distance unavailable',
                                               style: TextStyle(fontSize: 12, color: Colors.white),
                                             );
@@ -298,7 +298,7 @@ class _DashboardState extends State<Dashboard> {
                                           );
                                           return Text(
                                             '${distance.toStringAsFixed(2)} km away',
-                                            style: TextStyle(fontSize: 12, color: Colors.white),
+                                            style: const TextStyle(fontSize: 12, color: Colors.white),
                                           );
                                         },
                                       ),
@@ -314,7 +314,7 @@ class _DashboardState extends State<Dashboard> {
                                           color: Colors.grey,
                                           borderRadius: BorderRadius.circular(5), // Make edges circular
                                         ),
-                                        child: Center(
+                                        child: const Center(
                                           child: Icon(
                                             Icons.save,
                                             color: Colors.white,
@@ -322,7 +322,7 @@ class _DashboardState extends State<Dashboard> {
                                           ),
                                         ),
                                       ),
-                                      SizedBox(width: 10), // Spacer between the two containers
+                                      const SizedBox(width: 10), // Spacer between the two containers
                                       Expanded(
                                         child: Container(
                                           height: deviceHeight * 0.04, // Adjust height as needed
@@ -330,7 +330,7 @@ class _DashboardState extends State<Dashboard> {
                                             color: Colors.yellowAccent, // Yellow accent color
                                             borderRadius: BorderRadius.circular(5), // Make edges circular
                                           ),
-                                          child: Center(
+                                          child: const Center(
                                             child: Text(
                                               'BOOK NOW',
                                               style: TextStyle(

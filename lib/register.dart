@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saloonshop/authentication.dart';
 import 'package:saloonshop/shoplogin.dart';
-import 'package:saloonshop/userlogin.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});

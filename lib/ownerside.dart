@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
-import 'dart:io';
 import 'package:saloonshop/location.dart';
 import 'package:saloonshop/savedata.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
