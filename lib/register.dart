@@ -4,175 +4,243 @@ import 'package:saloonshop/authentication.dart';
 import 'package:saloonshop/shoplogin.dart';
 
 class Register extends StatefulWidget {
-  const Register({super.key});
+  const Register({Key? key}) : super(key: key);
 
   @override
   State<Register> createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
+  bool _isShopRegister = true; // Initially show Shop Register section
   bool _isTextFieldFocused = false;
   bool _isPasswordVisible = false;
-  final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _shopNameController = TextEditingController();
 
   final Authentication _authentication = Authentication();
 
   @override
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
-    final double deviceHeight = MediaQuery.of(context).size.height;
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: SingleChildScrollView(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(height: deviceHeight * 0.17),
-            Container(
-              child: Image.asset(
-                "assets/logo/shop.png",
-                width: 150,
-                height: 150,
-              ),
-            ),
-            SizedBox(height: deviceHeight * 0.07),
-            Center(
-              child: IntrinsicHeight(
-                child: Container(
-                  width: deviceWidth*0.76,
-                  margin: const EdgeInsets.all(20),
-                  padding: const EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
-                        blurRadius: 5,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                    border: Border.all(
-                      color: Colors.grey,
-                      width: 2.0,
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      const Text(
-                        "Login",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                      const Divider(
-                        color: Colors.grey,
-                        thickness: 1,
-                      ),
-                      SizedBox(height: deviceHeight * 0.03),
-                      TextField(
-                        controller: _emailController,
-                        decoration: InputDecoration(
-                          hintText: 'Username',
-                          border: OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
-                              width: 1.0,
-                            ),
-                          ),
-                          focusedBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              color: Colors.grey,
-                              width: 2.0,
-                            ),
-                          ),
-                          filled: true,
-                          fillColor: Colors.grey.withOpacity(0.1),
-                          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onTap: () {
-                          setState(() {
-                            _isTextFieldFocused = true;
-                          });
-                        },
-                        onSubmitted: (value) {
-                          setState(() {
-                            _isTextFieldFocused = false;
-                          });
-                        },
-                        onChanged: (value) {
-                          // Handle text changes
-                        },
-                      ),
-                      SizedBox(height: deviceHeight * 0.01),
-                      Stack(
-                        alignment: Alignment.centerRight,
-                        children: [
-                          TextField(
-                            controller: _passwordController,
-                            obscureText: !_isPasswordVisible,
-                            decoration: InputDecoration(
-                              hintText: 'Password',
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
-                                  width: 1.0,
-                                ),
-                              ),
-                              focusedBorder: const OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: Colors.grey,
-                                  width: 2.0,
-                                ),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey.withOpacity(0.1),
-                              contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
-                                borderRadius: BorderRadius.circular(5),
-                              ),
-                            ),
-                            onTap: () {
-                              setState(() {
-                                _isTextFieldFocused = true;
-                              });
-                            },
-                            onSubmitted: (value) {
-                              setState(() {
-                                _isTextFieldFocused = false;
-                              });
-                            },
-                            onChanged: (value) {
-                              // Handle text changes
-                            },
-                          ),
-                          IconButton(
-                            icon: Icon(
-                              _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                              color: Colors.grey.withOpacity(0.7),
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                _isPasswordVisible = !_isPasswordVisible;
-                              });
-                            },
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: deviceHeight * 0.033),
-                      ElevatedButton(
-                        onPressed: () async {
-                          String email = _emailController.text;
-                          String password = _passwordController.text;
-                            try {
-                              await _authentication.registerWithEmailAndPassword(context,email, password);
 
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: SafeArea(
+        child: Center(
+          child: Container(
+            width: deviceWidth * 0.85, // Set width to 85% of device width
+            padding: EdgeInsets.all(20.0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.blueAccent), // Set container border color
+              borderRadius: BorderRadius.circular(10.0),
+              color: Colors.black, // Set container body color
+            ),
+            child: IntrinsicHeight(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10.0),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          blurRadius: 5,
+                          spreadRadius: 2,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 20.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            AnimatedContainer(
+                              duration: Duration(milliseconds: 300),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30.0),
+                                color: _isShopRegister ? Colors.blueAccent : Colors.black,
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isShopRegister = true;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                ),
+                                child: Text(
+                                  'Shop Register',
+                                  style: TextStyle(
+                                    color: _isShopRegister ? Colors.white : Colors.blueAccent,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            AnimatedContainer(
+                              duration: Duration(milliseconds: 300),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30.0),
+                                color: !_isShopRegister ? Colors.blueAccent : Colors.black,
+                              ),
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    _isShopRegister = false;
+                                  });
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                                ),
+                                child: Text(
+                                  'User Register',
+                                  style: TextStyle(
+                                    color: !_isShopRegister ? Colors.white : Colors.blueAccent,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.0),
+                        _isShopRegister
+                            ? Column(
+                          children: [
+                            TextFormField(
+                              controller: _shopNameController,
+                              decoration: InputDecoration(
+                                hintText: 'Shop Name',
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey.withOpacity(0.1),
+                                contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _isTextFieldFocused = true;
+                                });
+                              },
+                              onFieldSubmitted: (value) {
+                                setState(() {
+                                  _isTextFieldFocused = false;
+                                });
+                              },
+                              onChanged: (value) {
+                                // Handle text changes
+                              },
+                            ),
+                            SizedBox(height: 10.0),
+                          ],
+                        )
+                            : SizedBox(),
+                        TextFormField(
+                          controller: _emailController,
+                          decoration: InputDecoration(
+                            hintText: 'Email',
+                            border: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            filled: true,
+                            fillColor: Colors.grey.withOpacity(0.1),
+                            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                          ),
+                          onTap: () {
+                            setState(() {
+                              _isTextFieldFocused = true;
+                            });
+                          },
+                          onFieldSubmitted: (value) {
+                            setState(() {
+                              _isTextFieldFocused = false;
+                            });
+                          },
+                          onChanged: (value) {
+                            // Handle text changes
+                          },
+                        ),
+                        SizedBox(height: 10.0),
+                        Stack(
+                          alignment: Alignment.centerRight,
+                          children: [
+                            TextFormField(
+                              controller: _passwordController,
+                              obscureText: !_isPasswordVisible,
+                              decoration: InputDecoration(
+                                hintText: 'Password',
+                                border: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.grey.withOpacity(0.5), width: 1.0),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Colors.blueAccent, width: 2.0),
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                                filled: true,
+                                fillColor: Colors.grey.withOpacity(0.1),
+                                contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                              ),
+                              onTap: () {
+                                setState(() {
+                                  _isTextFieldFocused = true;
+                                });
+                              },
+                              onFieldSubmitted: (value) {
+                                setState(() {
+                                  _isTextFieldFocused = false;
+                                });
+                              },
+                              onChanged: (value) {
+                                // Handle text changes
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                                color: Colors.grey.withOpacity(0.7),
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _isPasswordVisible = !_isPasswordVisible;
+                                });
+                              },
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 20.0),
+                        ElevatedButton(
+                          onPressed: () async {
+                            String email = _emailController.text;
+                            String password = _passwordController.text;
+                            try {
+                              if (_isShopRegister) {
+                                String shopName = _shopNameController.text;
+                                //await _authentication.registerShopWithEmailAndPassword(context, shopName, email, password);
+                              } else {
+                                await _authentication.registerWithEmailAndPassword(context, email, password);
+                              }
                               ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Registeration Successful')),
+                                const SnackBar(content: Text('Registration Successful')),
                               );
                               Navigator.pushReplacement(
                                 context,
@@ -183,7 +251,6 @@ class _RegisterState extends State<Register> {
                               if (e is FirebaseAuthException) {
                                 switch (e.code) {
                                   case 'email-already-in-use':
-                                  // Don't navigate, show error message
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(content: Text('This email is already registered.')),
                                     );
@@ -204,7 +271,6 @@ class _RegisterState extends State<Register> {
                                     );
                                 }
                               } else {
-                                // Other errors
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Registration failed. Please try again later.')),
                                 );
@@ -212,24 +278,25 @@ class _RegisterState extends State<Register> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey, // Button color
-                            foregroundColor: Colors.black, // Text color
-                            padding: EdgeInsets.symmetric(vertical: deviceHeight*0.013, horizontal: deviceWidth*0.21),
+                            backgroundColor: Colors.blueAccent,
                             shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
+                              borderRadius: BorderRadius.circular(30.0),
                             ),
+                            padding: EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                           ),
-                          child: const Text(
+                          child: Text(
                             'Register',
                             style: TextStyle(fontSize: 18),
                           ),
-                      ),
-                    ],
+                        ),
+                        SizedBox(height: 20.0),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
-          ],
+          ),
         ),
       ),
     );
