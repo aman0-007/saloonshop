@@ -81,6 +81,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:saloonshop/ownerdashboard.dart';
 import 'package:saloonshop/register.dart';
 import 'package:saloonshop/shoplogin.dart';
 
@@ -150,7 +151,10 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                         width: deviceWidth * 0.6, // Set button width to 60% of device width
                         child: ElevatedButton(
                           onPressed: () {
-                            // Handle Shop Login button press
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => Ownerdashboard()),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.blueAccent, // Blue accent background
@@ -170,7 +174,10 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                         width: deviceWidth * 0.6, // Set button width to 60% of device width
                         child: OutlinedButton(
                           onPressed: () {
-                            // Handle User Login button press
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => Ownerdashboard()),
+                            // );
                           },
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(color: Colors.blueAccent), // Blue accent border
