@@ -83,7 +83,6 @@
 import 'package:flutter/material.dart';
 import 'package:saloonshop/ownerdashboard.dart';
 import 'package:saloonshop/register.dart';
-import 'package:saloonshop/shoplogin.dart';
 
 class Accountoptionpage extends StatefulWidget {
   const Accountoptionpage({super.key});
@@ -105,8 +104,8 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             GestureDetector(
-              child: Padding(
-                padding: const EdgeInsets.only(top: 16,right: 30),
+              child: const Padding(
+                padding: EdgeInsets.only(top: 16,right: 30),
                 child: Text(
                   "Register",
                   style: TextStyle(
@@ -132,7 +131,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                     borderRadius: BorderRadius.circular(10.0), // Rounded corners
                     color: Colors.transparent, // Transparent body color
                   ),
-                  padding: EdgeInsets.all(20.0),
+                  padding: const EdgeInsets.all(20.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -141,19 +140,19 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                         "Login Type",
                         style: TextStyle(color: Colors.blueAccent.withOpacity(0.8), fontSize: 18.0),
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       Divider(
                         color: Colors.blueAccent.withOpacity(0.5),
                         thickness: 1.0,
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       SizedBox(
                         width: deviceWidth * 0.6, // Set button width to 60% of device width
                         child: ElevatedButton(
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Ownerdashboard()),
+                              MaterialPageRoute(builder: (context) => const Ownerdashboard()),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -161,15 +160,15 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0), // Circular button
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           ),
-                          child: Text(
+                          child: const Text(
                             "Shop Login",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
                       ),
-                      SizedBox(height: 10.0),
+                      const SizedBox(height: 10.0),
                       SizedBox(
                         width: deviceWidth * 0.6, // Set button width to 60% of device width
                         child: OutlinedButton(
@@ -180,13 +179,13 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                             // );
                           },
                           style: OutlinedButton.styleFrom(
-                            side: BorderSide(color: Colors.blueAccent), // Blue accent border
+                            side: const BorderSide(color: Colors.blueAccent), // Blue accent border
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0), // Circular button
                             ),
-                            padding: EdgeInsets.symmetric(horizontal: 20.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           ),
-                          child: Text(
+                          child: const Text(
                             "User Login",
                             style: TextStyle(color: Colors.blueAccent),
                           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saloonshop/employeemangement.dart';
 import 'package:saloonshop/shopprofile.dart';
 
 class Ownerdashboard extends StatefulWidget {
@@ -15,20 +16,20 @@ class _OwnerdashboardState extends State<Ownerdashboard> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
-        title: Text(
+        title: const Text(
           'Dashboard',
           style: TextStyle(
             color: Colors.white,
           ),
         ),
-        iconTheme: IconThemeData(color: Colors.white), // Set drawer icon color to white
+        iconTheme: const IconThemeData(color: Colors.white), // Set drawer icon color to white
       ),
       drawer: Drawer(
         child: Container(
           color: Colors.white,
           child: Column(
             children: <Widget>[
-              DrawerHeader(
+              const DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.blueAccent,
                 ),
@@ -61,53 +62,57 @@ class _OwnerdashboardState extends State<Ownerdashboard> {
                   padding: EdgeInsets.zero,
                   children: <Widget>[
                     ListTile(
-                      leading: Icon(Icons.home, color: Colors.blueAccent),
-                      title: Text('Home', style: TextStyle(color: Colors.blueAccent)),
+                      leading: const Icon(Icons.home, color: Colors.blueAccent),
+                      title: const Text('Home', style: TextStyle(color: Colors.blueAccent)),
                       onTap: () {
                         //Navigator.pop(context);
                         Navigator.pushReplacement(
                           context,
-                          MaterialPageRoute(builder: (context) => Ownerdashboard()),
+                          MaterialPageRoute(builder: (context) => const Ownerdashboard()),
                         );
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.person, color: Colors.blueAccent),
-                      title: Text('Profile', style: TextStyle(color: Colors.blueAccent)),
+                      leading: const Icon(Icons.person, color: Colors.blueAccent),
+                      title: const Text('Profile', style: TextStyle(color: Colors.blueAccent)),
                       onTap: () {
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => Shopprofile()),
+                          MaterialPageRoute(builder: (context) => const Shopprofile()),
                         );
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.menu, color: Colors.blueAccent),
-                      title: Text('Menu', style: TextStyle(color: Colors.blueAccent)),
+                      leading: const Icon(Icons.menu, color: Colors.blueAccent),
+                      title: const Text('Menu', style: TextStyle(color: Colors.blueAccent)),
                       onTap: () {
                         // Navigate to profile
                       },
                     ),
 
                     ListTile(
-                      leading: Icon(Icons.people, color: Colors.blueAccent),
-                      title: Text('Employee', style: TextStyle(color: Colors.blueAccent)),
+                      leading: const Icon(Icons.people, color: Colors.blueAccent),
+                      title: const Text('Employee', style: TextStyle(color: Colors.blueAccent)),
                       onTap: () {
-                        // Navigate to employee
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Employeemangement()),
+                        );
                       },
                     ),
                     ListTile(
-                      leading: Icon(Icons.calendar_today, color: Colors.blueAccent),
-                      title: Text('Appointments', style: TextStyle(color: Colors.blueAccent)),
+                      leading: const Icon(Icons.calendar_today, color: Colors.blueAccent),
+                      title: const Text('Appointments', style: TextStyle(color: Colors.blueAccent)),
                       onTap: () {
                         // Navigate to appointments
                       },
                     ),
-                    Divider(), // Divider before Sign Out
+                    const Divider(), // Divider before Sign Out
                     ListTile(
-                      leading: Icon(Icons.exit_to_app, color: Colors.redAccent),
-                      title: Text('Sign Out', style: TextStyle(color: Colors.redAccent)),
+                      leading: const Icon(Icons.exit_to_app, color: Colors.redAccent),
+                      title: const Text('Sign Out', style: TextStyle(color: Colors.redAccent)),
                       onTap: () {
                         // Perform sign out
                       },
@@ -119,7 +124,7 @@ class _OwnerdashboardState extends State<Ownerdashboard> {
           ),
         ),
       ),
-      body: SafeArea(
+      body: const SafeArea(
         child: Column(
           children: [
             // Your content widgets here
