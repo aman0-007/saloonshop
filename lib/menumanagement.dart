@@ -241,19 +241,17 @@ class ManageMenuSection extends StatefulWidget {
 
 class _ManageMenuSectionState extends State<ManageMenuSection> {
   final TextEditingController _menuNameController = TextEditingController();
-  final TextEditingController _menuPasswordController = TextEditingController();
-  final TextEditingController _employeeEmailController = TextEditingController();
-  final TextEditingController _employeeNumberController = TextEditingController();
+  final TextEditingController _menuPriceController = TextEditingController();
+  final TextEditingController _menuTimeController = TextEditingController();
   TextEditingController _searchController = TextEditingController();
-  List<Menu> filteredEmployees = [];
+  List<Menu> filteredMenu = [];
   final ImagePicker _picker = ImagePicker();
-  File? _profileImage;
   bool _isTextFieldFocused = false;
 
   @override
   void initState() {
     super.initState();
-    filteredEmployees = widget.menus;
+    filteredMenu = widget.menus;
   }
 
   @override
@@ -304,29 +302,26 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
 
         Expanded(
           child: ListView.builder(
-            itemCount: filteredEmployees.length,
+            itemCount: filteredMenu.length,
             itemBuilder: (context, index) {
               return Card(
                 margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage(filteredEmployees[index].profileImage),
-                  ),
-                  title: Text(filteredEmployees[index].name),
-                  subtitle: Text(filteredEmployees[index].email),
+                  title: Text(filteredMenu[index].name),
+                  subtitle: Row(children: [Text(filteredMenu[index].time),Text(filteredMenu[index].price),],),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
                         icon: Icon(Icons.edit),
                         onPressed: () {
-                          _showEditEmployeeDialog(context, filteredEmployees[index]);
+                          _showEditEmployeeDialog(context, filteredMenu[index]);
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                          widget.onDeleteMenu(filteredEmployees[index]);
+                          widget.onDeleteMenu(filteredMenu[index]);
                         },
                       ),
                     ],
@@ -358,26 +353,24 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
   void _filterEmployees(String query) {
     if (query.isNotEmpty) {
       setState(() {
-        filteredEmployees = widget.menus
+        filteredMenu = widget.menus
             .where((menu) =>
         menu.name.toLowerCase().contains(query.toLowerCase()) ||
-            menu.email.toLowerCase().contains(query.toLowerCase()))
+            menu.price.toLowerCase().contains(query.toLowerCase()))
             .toList();
       });
     } else {
       setState(() {
-        filteredEmployees = widget.menus;
+        filteredMenu = widget.menus;
       });
     }
   }
 
   void _showAddEmployeeDialog(BuildContext context) {
     Menu newMenu = Menu(
-      email: '',
-      password: '',
       name: '',
-      mobileNumber: '',
-      profileImage: 'assets/profile_image.jpg', // Example image path
+      price: '',
+      time: '',
     );
 
     showDialog(
@@ -447,9 +440,9 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  controller: _employeeNumberController,
+                  controller: _menuPriceController,
                   decoration: InputDecoration(
-                    hintText: 'Mobile Number',
+                    hintText: 'Price',
                     hintStyle: TextStyle(
                         color: Colors.blueAccent
                             .withOpacity(0.5)),
@@ -488,9 +481,9 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  controller: _employeeEmailController,
+                  controller: _menuTimeController,
                   decoration: InputDecoration(
-                    hintText: 'Email',
+                    hintText: 'Time',
                     hintStyle: TextStyle(
                         color: Colors.blueAccent
                             .withOpacity(0.5)),
@@ -528,77 +521,6 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                   },
                 ),
                 SizedBox(height: 10),
-                TextFormField(
-                  controller: _menuPasswordController,
-                  decoration: InputDecoration(
-                    hintText: 'Password',
-                    hintStyle: TextStyle(
-                        color: Colors.blueAccent
-                            .withOpacity(0.5)),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(
-                          color: Colors.grey.withOpacity(0.5),
-                          width: 1.0),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(
-                          color: Colors.blueAccent, width: 2.0),
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    filled: true,
-                    fillColor: Colors.grey.withOpacity(0.1),
-                    contentPadding: const EdgeInsets.symmetric(
-                        vertical: 12, horizontal: 16),
-                    labelStyle:
-                    const TextStyle(color: Colors.white),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  onTap: () {
-                    setState(() {
-                      _isTextFieldFocused = true;
-                    });
-                  },
-                  onFieldSubmitted: (value) {
-                    setState(() {
-                      _isTextFieldFocused = false;
-                    });
-                  },
-                  onChanged: (value) {
-                    // Handle text changes
-                  },
-                ),
-                SizedBox(height: 10),
-                ElevatedButton.icon(
-                  onPressed: () async {
-                    final pickedFile = await _picker.pickImage(
-                      source: ImageSource.gallery,
-                      imageQuality: 50,
-                    );
-                    if (pickedFile != null) {
-                      setState(() {
-                        _profileImage = File(pickedFile.path);
-                      });
-                    }
-                  },
-                  icon: Icon(Icons.upload),
-                  label: Text('Upload Profile Image'),
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent), // background color
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // foreground color
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                    ),
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                    ),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity, 0), // full width available
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
@@ -627,12 +549,10 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
   }
 
   void _showEditEmployeeDialog(BuildContext context, Menu menu) {
-    Menu updatedEmployee = Menu(
-      email: menu.email,
-      password: menu.password,
+    Menu updateMenu = Menu(
       name: menu.name,
-      mobileNumber: menu.mobileNumber,
-      profileImage: menu.profileImage,
+      time: menu.time,
+      price: menu.price,
     );
 
     showDialog(
@@ -665,15 +585,15 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                     contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
                   style: TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updatedEmployee.name),
+                  controller: TextEditingController(text: updateMenu.name),
                   onChanged: (value) {
-                    updatedEmployee.name = value;
+                    updateMenu.name = value;
                   },
                 ),
                 SizedBox(height: 10),
                 TextField(
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Price',
                     labelStyle: TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
@@ -688,15 +608,15 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                     contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
                   style: TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updatedEmployee.email),
+                  controller: TextEditingController(text: updateMenu.price),
                   onChanged: (value) {
-                    updatedEmployee.email = value;
+                    updateMenu.price = value;
                   },
                 ),
                 SizedBox(height: 10),
                 TextField(
                   decoration: InputDecoration(
-                    labelText: 'Mobile Number',
+                    labelText: 'Time',
                     labelStyle: TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
@@ -711,34 +631,12 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                     contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
                   style: TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updatedEmployee.mobileNumber),
+                  controller: TextEditingController(text: updateMenu.time),
                   onChanged: (value) {
-                    updatedEmployee.mobileNumber = value;
+                    updateMenu.time = value;
                   },
                 ),
                 SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Profile Image',
-                    labelStyle: TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  style: TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updatedEmployee.profileImage),
-                  onChanged: (value) {
-                    updatedEmployee.profileImage = value;
-                  },
-                ),
               ],
             ),
           ),
@@ -751,7 +649,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
             ),
             ElevatedButton(
               onPressed: () {
-                widget.onEditMenu(updatedEmployee);
+                widget.onEditMenu(updateMenu);
                 Navigator.of(context).pop();
               },
               child: Text('Save', style: TextStyle(color: Colors.white)),
