@@ -3,51 +3,45 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-class Employee {
-  String email;
-  String password;
+class Menu {
   String name;
-  String mobileNumber;
-  String profileImage;
+  String time;
+  String price;
+  
 
-  Employee({
-    required this.email,
-    required this.password,
+  Menu({
     required this.name,
-    required this.mobileNumber,
-    required this.profileImage,
+    required this.time,
+    required this.price,
   });
 
-  // Method to update employee details
+  // Method to update menu details
   void updateDetails({
-    required String email,
-    required String password,
+    required String price,
+    required String time,
     required String name,
-    required String mobileNumber,
-    required String profileImage,
+
   }) {
-    this.email = email;
-    this.password = password;
+    this.time = time;
+    this.price = price;
     this.name = name;
-    this.mobileNumber = mobileNumber;
-    this.profileImage = profileImage;
   }
 }
 
 
-class Employeemangement extends StatefulWidget {
-  const Employeemangement({Key? key}) : super(key: key);
+class Menumanagement extends StatefulWidget {
+  const Menumanagement({Key? key}) : super(key: key);
 
   @override
-  State<Employeemangement> createState() => _EmployeemangementState();
+  State<Menumanagement> createState() => _MenumanagementState();
 }
 
-class _EmployeemangementState extends State<Employeemangement> {
+class _MenumanagementState extends State<Menumanagement> {
   late PageController _pageController;
   int _selectedTabIndex = 0; // Track the selected section index
 
   // Sample data for demonstration
-  List<Employee> employees = [];
+  List<Menu> menus = [];
 
   @override
   void initState() {
@@ -68,7 +62,7 @@ class _EmployeemangementState extends State<Employeemangement> {
       appBar: AppBar(
         backgroundColor: Colors.blueAccent,
         title: const Text(
-          'Manage Employees',
+          'Manage Menu',
           style: TextStyle(color: Colors.white),
         ),
         iconTheme: IconThemeData(color: Colors.white), // Icon color set to white
@@ -91,7 +85,7 @@ class _EmployeemangementState extends State<Employeemangement> {
                   child: Column(
                     children: [
                       Text(
-                        'My Employees',
+                        'My Menu',
                         style: TextStyle(
                           color: _selectedTabIndex == 0
                               ? Colors.blueAccent
@@ -127,7 +121,7 @@ class _EmployeemangementState extends State<Employeemangement> {
                   child: Column(
                     children: [
                       Text(
-                        'Manage Employees',
+                        'Manage Menu',
                         style: TextStyle(
                           color: _selectedTabIndex == 1
                               ? Colors.blueAccent
@@ -138,7 +132,7 @@ class _EmployeemangementState extends State<Employeemangement> {
                       ),
                       SizedBox(
                         height: 5,
-                        width: 150, // Expanded width for the underline
+                        width: 150,
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 300),
                           decoration: BoxDecoration(
@@ -164,12 +158,12 @@ class _EmployeemangementState extends State<Employeemangement> {
                 });
               },
               children: [
-                MyEmployeesSection(employees: employees),
-                ManageEmployeesSection(
-                  employees: employees,
-                  onAddEmployee: _addNewEmployee,
-                  onDeleteEmployee: _deleteEmployee,
-                  onEditEmployee: _editEmployeeDetails,
+                MyMenuSection(menus: menus),
+                ManageMenuSection(
+                  menus: menus,
+                  onAddMenu: _addNewMenu,
+                  onDeleteMenu: _deleteEmployee,
+                  onEditMenu: _editMenuDetails,
                 ),
               ],
             ),
@@ -179,80 +173,79 @@ class _EmployeemangementState extends State<Employeemangement> {
     );
   }
 
-  void _addNewEmployee(Employee newEmployee) {
+  void _addNewMenu(Menu newMenu) {
     setState(() {
-      employees.add(newEmployee);
-      _pageController.jumpToPage(0); // Switch to My Employees page after adding
+      menus.add(newMenu);
+      _pageController.jumpToPage(0); // Switch to My menus page after adding
     });
   }
 
-  void _editEmployeeDetails(Employee employee) {
-    // Implement logic to edit employee details
-    // For simplicity, we can just print employee details here
-    print('Editing details of ${employee.name}');
+  void _editMenuDetails(Menu menu) {
+    // Implement logic to edit menu details
+    // For simplicity, we can just print menu details here
+    print('Editing details of ${menu.name}');
   }
 
-  void _deleteEmployee(Employee employee) {
-    // Implement logic to delete employee
+  void _deleteEmployee(Menu menu) {
+    // Implement logic to delete menu
     setState(() {
-      employees.remove(employee);
+      menus.remove(menu);
     });
   }
 }
 
-class MyEmployeesSection extends StatelessWidget {
-  final List<Employee> employees;
+class MyMenuSection extends StatelessWidget {
+  final List<Menu> menus;
 
-  MyEmployeesSection({required this.employees});
+  MyMenuSection({required this.menus});
 
   @override
   Widget build(BuildContext context) {
-    return employees.isEmpty
+    return menus.isEmpty
         ? Center(
       child: Text(
-        'No Employees',
+        'No menus',
         style: TextStyle(color: Colors.white),
       ),
     )
         : ListView.builder(
-      itemCount: employees.length,
+      itemCount: menus.length,
       itemBuilder: (context, index) {
         return ListTile(
           leading: CircleAvatar(
-            backgroundImage: AssetImage(employees[index].profileImage),
+            //backgroundImage: AssetImage(menus[index].profileImage),
           ),
-          title: Text(employees[index].name),
-          subtitle: Text(employees[index].email),
+          title: Text(menus[index].name),
         );
       },
     );
   }
 }
 
-class ManageEmployeesSection extends StatefulWidget {
-  final List<Employee> employees;
-  final Function(Employee) onAddEmployee;
-  final Function(Employee) onDeleteEmployee;
-  final Function(Employee) onEditEmployee;
+class ManageMenuSection extends StatefulWidget {
+  final List<Menu> menus;
+  final Function(Menu) onAddMenu;
+  final Function(Menu) onDeleteMenu;
+  final Function(Menu) onEditMenu;
 
-  ManageEmployeesSection({
-    required this.employees,
-    required this.onAddEmployee,
-    required this.onDeleteEmployee,
-    required this.onEditEmployee,
+  ManageMenuSection({
+    required this.menus,
+    required this.onAddMenu,
+    required this.onDeleteMenu,
+    required this.onEditMenu,
   });
 
   @override
-  _ManageEmployeesSectionState createState() => _ManageEmployeesSectionState();
+  _ManageMenuSectionState createState() => _ManageMenuSectionState();
 }
 
-class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
-  final TextEditingController _employeeNameController = TextEditingController();
-  final TextEditingController _employeePasswordController = TextEditingController();
+class _ManageMenuSectionState extends State<ManageMenuSection> {
+  final TextEditingController _menuNameController = TextEditingController();
+  final TextEditingController _menuPasswordController = TextEditingController();
   final TextEditingController _employeeEmailController = TextEditingController();
   final TextEditingController _employeeNumberController = TextEditingController();
   TextEditingController _searchController = TextEditingController();
-  List<Employee> filteredEmployees = [];
+  List<Menu> filteredEmployees = [];
   final ImagePicker _picker = ImagePicker();
   File? _profileImage;
   bool _isTextFieldFocused = false;
@@ -260,7 +253,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
   @override
   void initState() {
     super.initState();
-    filteredEmployees = widget.employees;
+    filteredEmployees = widget.menus;
   }
 
   @override
@@ -333,7 +326,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                       IconButton(
                         icon: Icon(Icons.delete),
                         onPressed: () {
-                          widget.onDeleteEmployee(filteredEmployees[index]);
+                          widget.onDeleteMenu(filteredEmployees[index]);
                         },
                       ),
                     ],
@@ -365,21 +358,21 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
   void _filterEmployees(String query) {
     if (query.isNotEmpty) {
       setState(() {
-        filteredEmployees = widget.employees
-            .where((employee) =>
-        employee.name.toLowerCase().contains(query.toLowerCase()) ||
-            employee.email.toLowerCase().contains(query.toLowerCase()))
+        filteredEmployees = widget.menus
+            .where((menu) =>
+        menu.name.toLowerCase().contains(query.toLowerCase()) ||
+            menu.email.toLowerCase().contains(query.toLowerCase()))
             .toList();
       });
     } else {
       setState(() {
-        filteredEmployees = widget.employees;
+        filteredEmployees = widget.menus;
       });
     }
   }
 
   void _showAddEmployeeDialog(BuildContext context) {
-    Employee newEmployee = Employee(
+    Menu newMenu = Menu(
       email: '',
       password: '',
       name: '',
@@ -392,7 +385,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            'Add New Employee',
+            'Add New Menu',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
           ),
           backgroundColor: Colors.black,
@@ -413,7 +406,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                   ),
                 ),
                 TextFormField(
-                  controller: _employeeNameController,
+                  controller: _menuNameController,
                   decoration: InputDecoration(
                     hintText: 'Name',
                     hintStyle: TextStyle(
@@ -536,7 +529,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                 ),
                 SizedBox(height: 10),
                 TextFormField(
-                  controller: _employeePasswordController,
+                  controller: _menuPasswordController,
                   decoration: InputDecoration(
                     hintText: 'Password',
                     hintStyle: TextStyle(
@@ -618,7 +611,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
             ),
             ElevatedButton(
               onPressed: () {
-                widget.onAddEmployee(newEmployee);
+                widget.onAddMenu(newMenu);
                 Navigator.of(context).pop();
               },
               child: Text('Add', style: TextStyle(color: Colors.white)),
@@ -633,13 +626,13 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
 
   }
 
-  void _showEditEmployeeDialog(BuildContext context, Employee employee) {
-    Employee updatedEmployee = Employee(
-      email: employee.email,
-      password: employee.password,
-      name: employee.name,
-      mobileNumber: employee.mobileNumber,
-      profileImage: employee.profileImage,
+  void _showEditEmployeeDialog(BuildContext context, Menu menu) {
+    Menu updatedEmployee = Menu(
+      email: menu.email,
+      password: menu.password,
+      name: menu.name,
+      mobileNumber: menu.mobileNumber,
+      profileImage: menu.profileImage,
     );
 
     showDialog(
@@ -647,7 +640,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
       builder: (context) {
         return AlertDialog(
           title: Text(
-            'Edit Employee',
+            'Edit Menu',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.blueAccent,
@@ -758,7 +751,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
             ),
             ElevatedButton(
               onPressed: () {
-                widget.onEditEmployee(updatedEmployee);
+                widget.onEditMenu(updatedEmployee);
                 Navigator.of(context).pop();
               },
               child: Text('Save', style: TextStyle(color: Colors.white)),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saloonshop/employeemangement.dart';
+import 'package:saloonshop/menumanagement.dart';
 import 'package:saloonshop/shopprofile.dart';
 
 class Ownerdashboard extends StatefulWidget {
@@ -87,7 +88,11 @@ class _OwnerdashboardState extends State<Ownerdashboard> {
                       leading: const Icon(Icons.menu, color: Colors.blueAccent),
                       title: const Text('Menu', style: TextStyle(color: Colors.blueAccent)),
                       onTap: () {
-                        // Navigate to profile
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => Menumanagement()),
+                        );
                       },
                     ),
 

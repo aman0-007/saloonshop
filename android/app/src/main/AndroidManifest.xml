@@ -2,7 +2,7 @@
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
-        android:label="saloonshop"
+        android:label="Saloon Cult"
         tools:replace="android:label"
         android:usesCleartextTraffic="true">>
 
