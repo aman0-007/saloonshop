@@ -1,30 +1,20 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:saloonshop/authentication.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Menu {
   String name;
   String time;
   String price;
-  
 
   Menu({
     required this.name,
     required this.time,
     required this.price,
   });
-
-  // Method to update menu details
-  void updateDetails({
-    required String price,
-    required String time,
-    required String name,
-
-  }) {
-    this.time = time;
-    this.price = price;
-    this.name = name;
-  }
 }
 
 
@@ -38,9 +28,6 @@ class Menumanagement extends StatefulWidget {
 class _MenumanagementState extends State<Menumanagement> {
   late PageController _pageController;
   int _selectedTabIndex = 0; // Track the selected section index
-
-  // Sample data for demonstration
-  List<Menu> menus = [];
 
   @override
   void initState() {
@@ -131,7 +118,7 @@ class _MenumanagementState extends State<Menumanagement> {
                       ),
                       SizedBox(
                         height: 5,
-                        width: 150,
+                        width: 150, // Expanded width for the underline
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 300),
                           decoration: BoxDecoration(
@@ -157,13 +144,9 @@ class _MenumanagementState extends State<Menumanagement> {
                 });
               },
               children: [
-                MyMenuSection(menus: menus),
+                MyMenuSection(),
                 ManageMenuSection(
-                  menus: menus,
-                  onAddMenu: _addNewMenu,
-                  onDeleteMenu: _deleteEmployee,
-                  onEditMenu: _editMenuDetails,
-                ),
+                    onAddMenu: _addNewMenu),
               ],
             ),
           ),
@@ -174,64 +157,30 @@ class _MenumanagementState extends State<Menumanagement> {
 
   void _addNewMenu(Menu newMenu) {
     setState(() {
-      menus.add(newMenu);
-      _pageController.jumpToPage(0); // Switch to My menus page after adding
+      _pageController.jumpToPage(0); // Switch to My Employees page after adding
     });
   }
 
-  void _editMenuDetails(Menu menu) {
-    // Implement logic to edit menu details
-    // For simplicity, we can just print menu details here
-    print('Editing details of ${menu.name}');
-  }
 
-  void _deleteEmployee(Menu menu) {
-    // Implement logic to delete menu
-    setState(() {
-      menus.remove(menu);
-    });
-  }
 }
 
 class MyMenuSection extends StatelessWidget {
-  final List<Menu> menus;
 
-  const MyMenuSection({super.key, required this.menus});
+  const MyMenuSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return menus.isEmpty
-        ? const Center(
-      child: Text(
-        'No menus',
-        style: TextStyle(color: Colors.white),
-      ),
-    )
-        : ListView.builder(
-      itemCount: menus.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: const CircleAvatar(
-            //backgroundImage: AssetImage(menus[index].profileImage),
-          ),
-          title: Text(menus[index].name),
-        );
-      },
+    return Scaffold(
+      backgroundColor: Colors.black,
     );
   }
 }
 
 class ManageMenuSection extends StatefulWidget {
-  final List<Menu> menus;
   final Function(Menu) onAddMenu;
-  final Function(Menu) onDeleteMenu;
-  final Function(Menu) onEditMenu;
 
-  const ManageMenuSection({super.key, 
-    required this.menus,
+  const ManageMenuSection({super.key,
     required this.onAddMenu,
-    required this.onDeleteMenu,
-    required this.onEditMenu,
   });
 
   @override
@@ -240,18 +189,11 @@ class ManageMenuSection extends StatefulWidget {
 
 class _ManageMenuSectionState extends State<ManageMenuSection> {
   final TextEditingController _menuNameController = TextEditingController();
-  final TextEditingController _menuPriceController = TextEditingController();
   final TextEditingController _menuTimeController = TextEditingController();
+  final TextEditingController _menuPriceController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
-  List<Menu> filteredMenu = [];
-  final ImagePicker _picker = ImagePicker();
   bool _isTextFieldFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    filteredMenu = widget.menus;
-  }
+  final Authentication _authentication = Authentication();
 
   @override
   void dispose() {
@@ -287,57 +229,31 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                 icon: Icon(Icons.clear, color: Colors.blueAccent.withOpacity(0.5)),
                 onPressed: () {
                   _searchController.clear();
-                  _filterEmployees('');
                 },
               )
                   : null,
             ),
             style: const TextStyle(color: Colors.white),
-            onChanged: (value) {
-              _filterEmployees(value);
-            },
           ),
         ),
-
         Expanded(
-          child: ListView.builder(
-            itemCount: filteredMenu.length,
-            itemBuilder: (context, index) {
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: ListTile(
-                  title: Text(filteredMenu[index].name),
-                  subtitle: Row(children: [Text(filteredMenu[index].time),Text(filteredMenu[index].price),],),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          _showEditEmployeeDialog(context, filteredMenu[index]);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          widget.onDeleteMenu(filteredMenu[index]);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+          child: Container(
+            child: Center(
+              child: Text(
+                'Manage Menu',
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 8.0,bottom: 9),
+              padding: const EdgeInsets.only(right: 35.0,bottom: 30.0),
               child: FloatingActionButton(
                 onPressed: () {
-                  _showAddEmployeeDialog(context);
+                  _showAddMenuDialog(context);
                 },
                 backgroundColor: Colors.blueAccent,
                 child: const Icon(Icons.add, color: Colors.white),
@@ -349,23 +265,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
     );
   }
 
-  void _filterEmployees(String query) {
-    if (query.isNotEmpty) {
-      setState(() {
-        filteredMenu = widget.menus
-            .where((menu) =>
-        menu.name.toLowerCase().contains(query.toLowerCase()) ||
-            menu.price.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      });
-    } else {
-      setState(() {
-        filteredMenu = widget.menus;
-      });
-    }
-  }
-
-  void _showAddEmployeeDialog(BuildContext context) {
+  void _showAddMenuDialog(BuildContext context) {
     Menu newMenu = Menu(
       name: '',
       price: '',
@@ -378,7 +278,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
         return AlertDialog(
           title: const Text(
             'Add New Menu',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
           ),
           backgroundColor: Colors.black,
           shape: RoundedRectangleBorder(
@@ -531,7 +431,40 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
               child: const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  String name = _menuNameController.text;
+                  String price = _menuPriceController.text;
+                  String time = _menuTimeController.text;
+                  await _authentication.addShopMenuItem( context, name, price, time);
+                  widget.onAddMenu(newMenu);
+                  Navigator.of(context).pop();
+
+                }catch (e) {
+                  // Registration failed, handle error
+                  if (e is FirebaseAuthException) {
+                    switch (e.code) {
+                      case 'email-already-in-use':
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('This email is already registered.')),
+                        );
+                        break;
+                      case 'invalid-email':
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please enter a valid email address.')),
+                        );
+                        break;
+                      default:
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Registration failed. Please try again later.')),
+                        );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Registration failed. Please try again later.')),
+                    );
+                  }
+                }
                 widget.onAddMenu(newMenu);
                 Navigator.of(context).pop();
               },
@@ -545,120 +478,5 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
       },
     );
 
-  }
-
-  void _showEditEmployeeDialog(BuildContext context, Menu menu) {
-    Menu updateMenu = Menu(
-      name: menu.name,
-      time: menu.time,
-      price: menu.price,
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text(
-            'Edit Menu',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.blueAccent,
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updateMenu.name),
-                  onChanged: (value) {
-                    updateMenu.name = value;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Price',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updateMenu.price),
-                  onChanged: (value) {
-                    updateMenu.price = value;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Time',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updateMenu.time),
-                  onChanged: (value) {
-                    updateMenu.time = value;
-                  },
-                ),
-                const SizedBox(height: 10),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                widget.onEditMenu(updateMenu);
-                Navigator.of(context).pop();
-              },
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
-              ),
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

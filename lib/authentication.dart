@@ -7,7 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:saloonshop/ownerside.dart'; // Assuming this is your owner side page
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Authentication {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -78,10 +79,11 @@ class Authentication {
       );
 
       // Navigate to the owner side page upon successful registration
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const Ownerside()),
-      );
+
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const Ownerside()),
+      // );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -107,10 +109,10 @@ class Authentication {
 
         if (userCredential.user != null) {
           // Navigate to Ownerside page upon successful sign-in
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Ownerside()),
-          );
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const Ownerside()),
+          // );
           return userCredential.user;
         }
       }
@@ -130,7 +132,12 @@ class Authentication {
         password: password,
       );
 
-      return userCredential.user;
+      User? user = userCredential.user;
+      if (user != null){
+        await saveUserSession(user);
+      }
+
+      return user;
     } catch (e) {
       print('Sign-in failed: $e');
       return null;
@@ -152,6 +159,108 @@ class Authentication {
     }
   }
 
+  Future<void> registerEmployeeWithEmailAndPassword(
+      BuildContext context,
+      String employeeName,
+      String mobileNumber,
+      String email,
+      String password,
+      File profileImage,
+      ) async {
+    try {
+      // Register the new employee using Firebase Authentication
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Upload the employee profile image and get the URL
+      String profileImageUrl = await _uploadImage(profileImage, 'employee_profile_images');
+
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+      String? userEmail = prefs.getString('email');
+
+      if (userId != null && userEmail != null) {
+        // Save the new employee data to Firestore under the current shop's employees sub-collection
+        await FirebaseFirestore.instance
+            .collection('shops')
+            .doc(userId)
+            .collection('employees')
+            .doc(userCredential.user?.uid)
+            .set({
+          'employeeName': employeeName,
+          'mobileNumber': mobileNumber,
+          'email': email,
+          'profileImage': profileImageUrl,
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Employee registration successful'),
+          ),
+        );
+
+        // Navigate to the owner side page upon successful registration
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const Ownerside()),
+        // );
+      } else {
+        throw Exception('No logged-in user found');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to register employee'),
+        ),
+      );
+      print('Employee registration failed: $e');
+    }
+  }
+
+
+  Future<void> addShopMenuItem(BuildContext context, String name, String price, String time) async {
+    try {
+      // Get the current logged-in user
+      User? currentUser = _auth.currentUser;
+
+      if (currentUser != null) {
+        // Save menu data to Firestore under the current shop's menu sub-collection
+        await FirebaseFirestore.instance
+            .collection('shops')
+            .doc(currentUser.uid)
+            .collection('menu')
+            .add({
+          'menuName': name,
+          'menuPrice': price,
+          'menuTime': time,
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Menu item added successfully'),
+          ),
+        );
+      } else {
+        throw Exception('No logged-in user found');
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to add menu item'),
+        ),
+      );
+      print('Menu adding failed: $e');
+    }
+  }
+
+
+  Future<void> saveUserSession(User user) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userId', user.uid);
+    await prefs.setString('email', user.email ?? '');
+  }
 }
 
 

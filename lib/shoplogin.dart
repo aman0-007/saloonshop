@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saloonshop/authentication.dart';
-import 'package:saloonshop/ownerside.dart';
+import 'package:saloonshop/ownerdashboard.dart';
 
 class Shoplogin extends StatefulWidget {
   const Shoplogin({super.key});
@@ -23,7 +23,7 @@ class _ShoploginState extends State<Shoplogin> {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double deviceHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.black,
       body: SingleChildScrollView(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -47,14 +47,14 @@ class _ShoploginState extends State<Shoplogin> {
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.grey.withOpacity(0.3),
+                        color: Colors.black,
                         blurRadius: 5,
                         spreadRadius: 2,
                         offset: const Offset(0, 3),
                       ),
                     ],
                     border: Border.all(
-                      color: Colors.grey,
+                      color: Colors.blueAccent,
                       width: 2.0,
                     ),
                   ),
@@ -62,10 +62,10 @@ class _ShoploginState extends State<Shoplogin> {
                     children: [
                       const Text(
                         "Login",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent),
                       ),
                       const Divider(
-                        color: Colors.grey,
+                        color: Colors.blueAccent,
                         thickness: 1,
                       ),
                       SizedBox(height: deviceHeight * 0.03),
@@ -73,6 +73,8 @@ class _ShoploginState extends State<Shoplogin> {
                         controller: _emailController,
                         decoration: InputDecoration(
                           hintText: 'Username',
+                          hintStyle:
+                          TextStyle(color: Colors.blueAccent.withOpacity(0.5)),
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
@@ -81,7 +83,7 @@ class _ShoploginState extends State<Shoplogin> {
                           ),
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.grey,
+                              color: Colors.blueAccent,
                               width: 2.0,
                             ),
                           ),
@@ -93,6 +95,7 @@ class _ShoploginState extends State<Shoplogin> {
                             borderRadius: BorderRadius.circular(5),
                           ),
                         ),
+                        style: const TextStyle(color: Colors.white),
                         onTap: () {
                           setState(() {
                             _isTextFieldFocused = true;
@@ -116,6 +119,8 @@ class _ShoploginState extends State<Shoplogin> {
                             obscureText: !_isPasswordVisible,
                             decoration: InputDecoration(
                               hintText: 'Password',
+                              hintStyle:
+                              TextStyle(color: Colors.blueAccent.withOpacity(0.5)),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
@@ -124,7 +129,7 @@ class _ShoploginState extends State<Shoplogin> {
                               ),
                               focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.grey,
+                                  color: Colors.blueAccent,
                                   width: 2.0,
                                 ),
                               ),
@@ -136,6 +141,7 @@ class _ShoploginState extends State<Shoplogin> {
                                 borderRadius: BorderRadius.circular(5),
                               ),
                             ),
+                            style: const TextStyle(color: Colors.white),
                             onTap: () {
                               setState(() {
                                 _isTextFieldFocused = true;
@@ -170,16 +176,15 @@ class _ShoploginState extends State<Shoplogin> {
                           String password = _passwordController.text;
                           User? user = await _authentication.signInWithEmailAndPassword(email, password);
                           if (user != null) {
-
                             Navigator.pushReplacement(
                               context,
-                              MaterialPageRoute(builder: (context) =>  const Ownerside()),
+                              MaterialPageRoute(builder: (context) =>  const Ownerdashboard()),
                             );
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.grey, // Button color
-                          foregroundColor: Colors.black, // Text color
+                          backgroundColor: Colors.blueAccent, // Background color
+                          foregroundColor: Colors.white,  // Text color
                           padding: EdgeInsets.symmetric(vertical: deviceHeight*0.013, horizontal: deviceWidth*0.21),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(5),

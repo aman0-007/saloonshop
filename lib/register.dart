@@ -5,7 +5,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:saloonshop/authentication.dart'; // Replace with correct path to your authentication file
 import 'package:saloonshop/location.dart';
-import 'package:saloonshop/shoplogin.dart'; // Replace with correct path to your shop login file
+import 'package:saloonshop/accountoptionpage.dart';
+// Replace with correct path to your shop login file
 import 'package:image_picker/image_picker.dart';
 
 class Register extends StatefulWidget {
@@ -292,12 +293,12 @@ class _RegisterState extends State<Register> {
 
                                   // Optionally, provide feedback to the user
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Location fetched successfully')));
+                                      const SnackBar(content: Text('Location fetched successfully')));
 
                                 } on Exception catch (e) {
                                   print('Error fetching location: $e');
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(content: Text('Failed to fetch location')));
+                                      const SnackBar(content: Text('Failed to fetch location')));
                                 }
                               },
                               icon: const Icon(Icons.location_on),
@@ -433,11 +434,11 @@ class _RegisterState extends State<Register> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(content: Text('Registration Successful')),
                                 );
-                                // Navigator.pushReplacement(
-                                //   context,
-                                //   MaterialPageRoute(builder: (context) => const Shoplogin()),
-                                // );
                               }
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(builder: (context) => const Accountoptionpage()),
+                              );
 
                             } catch (e) {
                               // Registration failed, handle error
@@ -446,11 +447,6 @@ class _RegisterState extends State<Register> {
                                   case 'email-already-in-use':
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(content: Text('This email is already registered.')),
-                                    );
-                                    break;
-                                  case 'weak-password':
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Password is too weak. Please choose a stronger password.')),
                                     );
                                     break;
                                   case 'invalid-email':

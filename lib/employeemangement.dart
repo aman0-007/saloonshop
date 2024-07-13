@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:saloonshop/authentication.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class Employee {
   String email;
@@ -17,21 +19,6 @@ class Employee {
     required this.mobileNumber,
     required this.profileImage,
   });
-
-  // Method to update employee details
-  void updateDetails({
-    required String email,
-    required String password,
-    required String name,
-    required String mobileNumber,
-    required String profileImage,
-  }) {
-    this.email = email;
-    this.password = password;
-    this.name = name;
-    this.mobileNumber = mobileNumber;
-    this.profileImage = profileImage;
-  }
 }
 
 
@@ -45,9 +32,6 @@ class Employeemangement extends StatefulWidget {
 class _EmployeemangementState extends State<Employeemangement> {
   late PageController _pageController;
   int _selectedTabIndex = 0; // Track the selected section index
-
-  // Sample data for demonstration
-  List<Employee> employees = [];
 
   @override
   void initState() {
@@ -164,13 +148,9 @@ class _EmployeemangementState extends State<Employeemangement> {
                 });
               },
               children: [
-                MyEmployeesSection(employees: employees),
+                MyEmployeesSection(),
                 ManageEmployeesSection(
-                  employees: employees,
-                  onAddEmployee: _addNewEmployee,
-                  onDeleteEmployee: _deleteEmployee,
-                  onEditEmployee: _editEmployeeDetails,
-                ),
+                  onAddEmployee: _addNewEmployee),
               ],
             ),
           ),
@@ -181,65 +161,30 @@ class _EmployeemangementState extends State<Employeemangement> {
 
   void _addNewEmployee(Employee newEmployee) {
     setState(() {
-      employees.add(newEmployee);
       _pageController.jumpToPage(0); // Switch to My Employees page after adding
     });
   }
 
-  void _editEmployeeDetails(Employee employee) {
-    // Implement logic to edit employee details
-    // For simplicity, we can just print employee details here
-    print('Editing details of ${employee.name}');
-  }
 
-  void _deleteEmployee(Employee employee) {
-    // Implement logic to delete employee
-    setState(() {
-      employees.remove(employee);
-    });
-  }
 }
 
 class MyEmployeesSection extends StatelessWidget {
-  final List<Employee> employees;
 
-  const MyEmployeesSection({super.key, required this.employees});
+  const MyEmployeesSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return employees.isEmpty
-        ? const Center(
-      child: Text(
-        'No Employees',
-        style: TextStyle(color: Colors.white),
-      ),
-    )
-        : ListView.builder(
-      itemCount: employees.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: CircleAvatar(
-            backgroundImage: AssetImage(employees[index].profileImage),
-          ),
-          title: Text(employees[index].name),
-          subtitle: Text(employees[index].email),
-        );
-      },
+    return Scaffold(
+      backgroundColor: Colors.black,
     );
   }
 }
 
 class ManageEmployeesSection extends StatefulWidget {
-  final List<Employee> employees;
   final Function(Employee) onAddEmployee;
-  final Function(Employee) onDeleteEmployee;
-  final Function(Employee) onEditEmployee;
 
-  const ManageEmployeesSection({super.key, 
-    required this.employees,
+  const ManageEmployeesSection({super.key,
     required this.onAddEmployee,
-    required this.onDeleteEmployee,
-    required this.onEditEmployee,
   });
 
   @override
@@ -252,16 +197,10 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
   final TextEditingController _employeeEmailController = TextEditingController();
   final TextEditingController _employeeNumberController = TextEditingController();
   final TextEditingController _searchController = TextEditingController();
-  List<Employee> filteredEmployees = [];
   final ImagePicker _picker = ImagePicker();
   File? _profileImage;
   bool _isTextFieldFocused = false;
-
-  @override
-  void initState() {
-    super.initState();
-    filteredEmployees = widget.employees;
-  }
+  final Authentication _authentication = Authentication();
 
   @override
   void dispose() {
@@ -297,57 +236,28 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                 icon: Icon(Icons.clear, color: Colors.blueAccent.withOpacity(0.5)),
                 onPressed: () {
                   _searchController.clear();
-                  _filterEmployees('');
                 },
               )
                   : null,
             ),
             style: const TextStyle(color: Colors.white),
-            onChanged: (value) {
-              _filterEmployees(value);
-            },
           ),
         ),
-
         Expanded(
-          child: ListView.builder(
-            itemCount: filteredEmployees.length,
-            itemBuilder: (context, index) {
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundImage: AssetImage(filteredEmployees[index].profileImage),
-                  ),
-                  title: Text(filteredEmployees[index].name),
-                  subtitle: Text(filteredEmployees[index].email),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit),
-                        onPressed: () {
-                          _showEditEmployeeDialog(context, filteredEmployees[index]);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          widget.onDeleteEmployee(filteredEmployees[index]);
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
+          child: Container(
+            child: Center(
+              child: Text(
+                'Manage Employee',
+                textAlign: TextAlign.center,
+              ),
+            ),
           ),
         ),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Padding(
-              padding: const EdgeInsets.only(right: 8.0,bottom: 9),
+              padding: const EdgeInsets.only(right: 35.0,bottom: 30.0),
               child: FloatingActionButton(
                 onPressed: () {
                   _showAddEmployeeDialog(context);
@@ -362,29 +272,13 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
     );
   }
 
-  void _filterEmployees(String query) {
-    if (query.isNotEmpty) {
-      setState(() {
-        filteredEmployees = widget.employees
-            .where((employee) =>
-        employee.name.toLowerCase().contains(query.toLowerCase()) ||
-            employee.email.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      });
-    } else {
-      setState(() {
-        filteredEmployees = widget.employees;
-      });
-    }
-  }
-
   void _showAddEmployeeDialog(BuildContext context) {
     Employee newEmployee = Employee(
-      email: '',
-      password: '',
       name: '',
       mobileNumber: '',
-      profileImage: 'assets/profile_image.jpg', // Example image path
+      email: '',
+      password: '',
+      profileImage: '',
     );
 
     showDialog(
@@ -393,7 +287,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
         return AlertDialog(
           title: const Text(
             'Add New Employee',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
           ),
           backgroundColor: Colors.black,
           shape: RoundedRectangleBorder(
@@ -617,7 +511,41 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
               child: const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
+                try {
+                  String email = _employeeEmailController.text;
+                  String password = _employeePasswordController.text;
+                  String name = _employeeNameController.text;
+                  String mobileNumber = _employeeNumberController.text;
+                  await _authentication.registerEmployeeWithEmailAndPassword(context, name, mobileNumber, email, password, _profileImage!);
+                  widget.onAddEmployee(newEmployee);
+                  Navigator.of(context).pop();
+
+                }catch (e) {
+                  // Registration failed, handle error
+                  if (e is FirebaseAuthException) {
+                    switch (e.code) {
+                      case 'email-already-in-use':
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('This email is already registered.')),
+                        );
+                        break;
+                      case 'invalid-email':
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Please enter a valid email address.')),
+                        );
+                        break;
+                      default:
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Registration failed. Please try again later.')),
+                        );
+                    }
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Registration failed. Please try again later.')),
+                    );
+                  }
+                }
                 widget.onAddEmployee(newEmployee);
                 Navigator.of(context).pop();
               },
@@ -631,144 +559,5 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
       },
     );
 
-  }
-
-  void _showEditEmployeeDialog(BuildContext context, Employee employee) {
-    Employee updatedEmployee = Employee(
-      email: employee.email,
-      password: employee.password,
-      name: employee.name,
-      mobileNumber: employee.mobileNumber,
-      profileImage: employee.profileImage,
-    );
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text(
-            'Edit Employee',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          backgroundColor: Colors.blueAccent,
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Name',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updatedEmployee.name),
-                  onChanged: (value) {
-                    updatedEmployee.name = value;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updatedEmployee.email),
-                  onChanged: (value) {
-                    updatedEmployee.email = value;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Mobile Number',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updatedEmployee.mobileNumber),
-                  onChanged: (value) {
-                    updatedEmployee.mobileNumber = value;
-                  },
-                ),
-                const SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    labelText: 'Profile Image',
-                    labelStyle: const TextStyle(color: Colors.white),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    filled: true,
-                    fillColor: Colors.black,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                  ),
-                  style: const TextStyle(color: Colors.white),
-                  controller: TextEditingController(text: updatedEmployee.profileImage),
-                  onChanged: (value) {
-                    updatedEmployee.profileImage = value;
-                  },
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                widget.onEditEmployee(updatedEmployee);
-                Navigator.of(context).pop();
-              },
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
-              ),
-              child: const Text('Save', style: TextStyle(color: Colors.white)),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
