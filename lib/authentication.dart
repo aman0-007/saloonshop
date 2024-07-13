@@ -1,11 +1,19 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:saloonshop/ownerside.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:saloonshop/ownerside.dart'; // Assuming this is your owner side page
 
 class Authentication {
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final ImagePicker _picker = ImagePicker();
   final GoogleSignIn googleSignIn = GoogleSignIn(
     clientId: '1050701892775-2gnmu9r8hbt6cn8tbho6a4hvr65eietu.apps.googleusercontent.com',
     scopes: [
@@ -14,6 +22,77 @@ class Authentication {
     ],
   );
 
+  // User Registration
+  Future<void> registerUserWithEmailAndPassword(BuildContext context, String email, String password) async {
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      // Save user data to Firestore in the 'users' collection
+      await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
+        'email': email,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('User registration successful'),
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to register user'),
+        ),
+      );
+      print('User registration failed: $e');
+    }
+  }
+
+  // Shop Registration (Owner Registration)
+  Future<void> registerShopWithEmailAndPassword(BuildContext context, String shopName, String email, String password, String registrationGstNumber, Position currentPosition, File profileImage, File bannerImage) async {
+    try {
+      UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      String profileImageUrl = await _uploadImage(profileImage, 'profile_images');
+      String bannerImageUrl = await _uploadImage(bannerImage, 'banner_images');
+
+      // Save shop data to Firestore (you can add more fields as needed)
+      await FirebaseFirestore.instance.collection('shops').doc(userCredential.user?.uid).set({
+        'shopName': shopName,
+        'email': email,
+        'registrationGstNumber': registrationGstNumber,
+        'currentPosition':GeoPoint(currentPosition.latitude, currentPosition.longitude),
+        'profileImage': profileImageUrl,
+        'bannerImage': bannerImageUrl,
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Shop registration successful'),
+        ),
+      );
+
+      // Navigate to the owner side page upon successful registration
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Ownerside()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to register shop'),
+        ),
+      );
+      print('Shop registration failed: $e');
+    }
+  }
+
+  // Sign in with Google
   Future<User?> signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
@@ -43,35 +122,36 @@ class Authentication {
     return null;
   }
 
-  Future<void> registerWithEmailAndPassword(BuildContext context,String email, String password) async {
-    UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: email,
-      password: password,
-    );
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Registration successful'),
-      ),
-    );
-
-    await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
-      'email': email,
-    });
-
-  }
-
+  // Sign in with email and password
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
-      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
       return userCredential.user;
     } catch (e) {
-
       print('Sign-in failed: $e');
       return null;
     }
   }
+
+
+  Future<String> _uploadImage(File? image, String folderName) async {
+    if (image == null) return '';
+
+    try {
+      Reference ref = _storage.ref().child(folderName).child('${DateTime.now()}.jpg');
+      UploadTask uploadTask = ref.putFile(image);
+      TaskSnapshot snapshot = await uploadTask;
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print('Image upload failed: $e');
+      return '';
+    }
+  }
+
 }
+
+

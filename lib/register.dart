@@ -2,30 +2,35 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:saloonshop/authentication.dart'; // Replace with correct path to your authentication file
+import 'package:saloonshop/location.dart';
 import 'package:saloonshop/shoplogin.dart'; // Replace with correct path to your shop login file
 import 'package:image_picker/image_picker.dart';
 
 class Register extends StatefulWidget {
-  const Register({Key? key}) : super(key: key);
+  const Register({super.key});
 
   @override
   _RegisterState createState() => _RegisterState();
 }
 
 class _RegisterState extends State<Register> {
-  bool _isShopRegister = true;
-  bool _isTextFieldFocused = false;
-  bool _isPasswordVisible = false;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _shopNameController = TextEditingController();
   final TextEditingController _registrationNumberController = TextEditingController();
   final TextEditingController _gstNumberController = TextEditingController();
+  bool _isShopRegister = true;
+  bool _isTextFieldFocused = false;
+  bool _isPasswordVisible = false;
   File? _profileImage;
   File? _bannerImage;
   final ImagePicker _picker = ImagePicker();
   final Authentication _authentication = Authentication();
+  final ULocation _locationService = ULocation();
+  Position? _currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -222,21 +227,21 @@ class _RegisterState extends State<Register> {
                                   });
                                 }
                               },
-                              icon: Icon(Icons.upload),
-                              label: Text('Upload Profile Image'),
+                              icon: const Icon(Icons.upload),
+                              label: const Text('Upload Profile Image'),
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent), // background color
-                                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // foreground color
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent), // background color
+                                foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // foreground color
+                                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
                                 ),
-                                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                  EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                                 ),
-                                minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(double.infinity, 0), // full width available
+                                minimumSize: WidgetStateProperty.all<Size>(
+                                  const Size(double.infinity, 0), // full width available
                                 ),
                               ),
                             ),
@@ -256,56 +261,64 @@ class _RegisterState extends State<Register> {
                                   });
                                 }
                               },
-                              icon: Icon(Icons.upload),
-                              label: Text('Upload Banner Image'),
+                              icon: const Icon(Icons.upload),
+                              label: const Text('Upload Banner Image'),
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent), // background color
-                                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // foreground color
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent), // background color
+                                foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // foreground color
+                                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
                                 ),
-                                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                  EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                                 ),
-                                minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(double.infinity, 0), // full width available
+                                minimumSize: WidgetStateProperty.all<Size>(
+                                  const Size(double.infinity, 0), // full width available
                                 ),
                               ),
                             ),
                             const SizedBox(height: 10.0),
-
-
-                            const SizedBox(height: 10.0),
-
-
                             ElevatedButton.icon(
-                              onPressed: () {
-                                // Implement location selection logic
+                              onPressed: () async {
+                                try {
+                                  // Fetch current location
+                                  await _locationService.getCurrentLocation((Position position){
+                                    setState(() {
+                                      _currentPosition = position;
+                                    });
+                                  });
+
+                                  // Optionally, provide feedback to the user
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Location fetched successfully')));
+
+                                } on Exception catch (e) {
+                                  print('Error fetching location: $e');
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(content: Text('Failed to fetch location')));
+                                }
                               },
-                              icon: Icon(Icons.location_on),
-                              label: Text('Select Location'),
+                              icon: const Icon(Icons.location_on),
+                              label: const Text('Select Location'),
                               style: ButtonStyle(
-                                backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent), // Background color
-                                foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // Text color
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent), // Background color
+                                foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // Text color
+                                shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
                                 ),
-                                padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                                  EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                                padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                                  const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                                 ),
-                                minimumSize: MaterialStateProperty.all<Size>(
-                                  Size(double.infinity, 0), // full width available
+                                minimumSize: WidgetStateProperty.all<Size>(
+                                  const Size(double.infinity, 0), // full width available
                                 ),
                               ),
                             ),
-
                             const SizedBox(height: 10.0),
-
-
                           ],
                         )
                             : const SizedBox(),
@@ -410,23 +423,22 @@ class _RegisterState extends State<Register> {
                             try {
                               if (_isShopRegister) {
                                 String shopName = _shopNameController.text;
-                                String registrationNumber =
-                                    _registrationNumberController.text;
+                                String registrationNumber = _registrationNumberController.text;
                                 String gstNumber = _gstNumberController.text;
                                 // Implement shop registration logic
-                                // await _authentication.registerShopWithEmailAndPassword(context, shopName, email, password);
+                                await _authentication.registerShopWithEmailAndPassword(context, shopName, email, password, registrationNumber, _currentPosition!, _profileImage!, _bannerImage!);
                               } else {
                                 // Implement user registration logic
-                                await _authentication.registerWithEmailAndPassword(
-                                    context, email, password);
+                                await _authentication.registerUserWithEmailAndPassword(context, email, password);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Registration Successful')),
+                                );
+                                // Navigator.pushReplacement(
+                                //   context,
+                                //   MaterialPageRoute(builder: (context) => const Shoplogin()),
+                                // );
                               }
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text('Registration Successful')),
-                              );
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(builder: (context) => const Shoplogin()),
-                              );
+
                             } catch (e) {
                               // Registration failed, handle error
                               if (e is FirebaseAuthException) {

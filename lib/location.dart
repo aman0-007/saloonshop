@@ -6,6 +6,7 @@ class ULocation {
     var status = await Permission.location.request();
     if (status.isDenied) {
       // Handle the case when the user denies the permission
+      throw Exception('Location permission denied');
     }
   }
 

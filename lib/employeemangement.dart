@@ -36,7 +36,7 @@ class Employee {
 
 
 class Employeemangement extends StatefulWidget {
-  const Employeemangement({Key? key}) : super(key: key);
+  const Employeemangement({super.key});
 
   @override
   State<Employeemangement> createState() => _EmployeemangementState();
@@ -71,7 +71,7 @@ class _EmployeemangementState extends State<Employeemangement> {
           'Manage Employees',
           style: TextStyle(color: Colors.white),
         ),
-        iconTheme: IconThemeData(color: Colors.white), // Icon color set to white
+        iconTheme: const IconThemeData(color: Colors.white), // Icon color set to white
       ),
       body: Column(
         children: [
@@ -84,7 +84,7 @@ class _EmployeemangementState extends State<Employeemangement> {
                   onTap: () {
                     _pageController.animateToPage(
                       0,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
                   },
@@ -104,7 +104,7 @@ class _EmployeemangementState extends State<Employeemangement> {
                         height: 5,
                         width: 100, // Expanded width for the underline
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           decoration: BoxDecoration(
                             color: _selectedTabIndex == 0
                                 ? Colors.blueAccent
@@ -120,7 +120,7 @@ class _EmployeemangementState extends State<Employeemangement> {
                   onTap: () {
                     _pageController.animateToPage(
                       1,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
                   },
@@ -140,7 +140,7 @@ class _EmployeemangementState extends State<Employeemangement> {
                         height: 5,
                         width: 150, // Expanded width for the underline
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           decoration: BoxDecoration(
                             color: _selectedTabIndex == 1
                                 ? Colors.blueAccent
@@ -203,12 +203,12 @@ class _EmployeemangementState extends State<Employeemangement> {
 class MyEmployeesSection extends StatelessWidget {
   final List<Employee> employees;
 
-  MyEmployeesSection({required this.employees});
+  const MyEmployeesSection({super.key, required this.employees});
 
   @override
   Widget build(BuildContext context) {
     return employees.isEmpty
-        ? Center(
+        ? const Center(
       child: Text(
         'No Employees',
         style: TextStyle(color: Colors.white),
@@ -235,7 +235,7 @@ class ManageEmployeesSection extends StatefulWidget {
   final Function(Employee) onDeleteEmployee;
   final Function(Employee) onEditEmployee;
 
-  ManageEmployeesSection({
+  const ManageEmployeesSection({super.key, 
     required this.employees,
     required this.onAddEmployee,
     required this.onDeleteEmployee,
@@ -251,7 +251,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
   final TextEditingController _employeePasswordController = TextEditingController();
   final TextEditingController _employeeEmailController = TextEditingController();
   final TextEditingController _employeeNumberController = TextEditingController();
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<Employee> filteredEmployees = [];
   final ImagePicker _picker = ImagePicker();
   File? _profileImage;
@@ -281,7 +281,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
               hintText: 'Search',
               hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
               border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
+                borderSide: const BorderSide(color: Colors.grey),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               enabledBorder: OutlineInputBorder(
@@ -289,7 +289,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                 borderRadius: BorderRadius.circular(5.0),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueAccent),
+                borderSide: const BorderSide(color: Colors.blueAccent),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               suffixIcon: _searchController.text.isNotEmpty
@@ -302,7 +302,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
               )
                   : null,
             ),
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
             onChanged: (value) {
               _filterEmployees(value);
             },
@@ -314,7 +314,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
             itemCount: filteredEmployees.length,
             itemBuilder: (context, index) {
               return Card(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: ListTile(
                   leading: CircleAvatar(
                     backgroundImage: AssetImage(filteredEmployees[index].profileImage),
@@ -325,13 +325,13 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: const Icon(Icons.edit),
                         onPressed: () {
                           _showEditEmployeeDialog(context, filteredEmployees[index]);
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                         onPressed: () {
                           widget.onDeleteEmployee(filteredEmployees[index]);
                         },
@@ -353,7 +353,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                   _showAddEmployeeDialog(context);
                 },
                 backgroundColor: Colors.blueAccent,
-                child: Icon(Icons.add, color: Colors.white),
+                child: const Icon(Icons.add, color: Colors.white),
               ),
             ),
           ],
@@ -391,14 +391,14 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             'Add New Employee',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
           ),
           backgroundColor: Colors.black,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(color: Colors.blueAccent), // Border color here
+            side: const BorderSide(color: Colors.blueAccent), // Border color here
           ),
 
           content: SingleChildScrollView(
@@ -452,7 +452,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                     // Handle text changes
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _employeeNumberController,
                   decoration: InputDecoration(
@@ -493,7 +493,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                     // Handle text changes
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _employeeEmailController,
                   decoration: InputDecoration(
@@ -534,7 +534,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                     // Handle text changes
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _employeePasswordController,
                   decoration: InputDecoration(
@@ -575,7 +575,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                     // Handle text changes
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 ElevatedButton.icon(
                   onPressed: () async {
                     final pickedFile = await _picker.pickImage(
@@ -588,21 +588,21 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                       });
                     }
                   },
-                  icon: Icon(Icons.upload),
-                  label: Text('Upload Profile Image'),
+                  icon: const Icon(Icons.upload),
+                  label: const Text('Upload Profile Image'),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent), // background color
-                    foregroundColor: MaterialStateProperty.all<Color>(Colors.white), // foreground color
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent), // background color
+                    foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // foreground color
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                     ),
-                    padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                      EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
+                    padding: WidgetStateProperty.all<EdgeInsetsGeometry>(
+                      const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
                     ),
-                    minimumSize: MaterialStateProperty.all<Size>(
-                      Size(double.infinity, 0), // full width available
+                    minimumSize: WidgetStateProperty.all<Size>(
+                      const Size(double.infinity, 0), // full width available
                     ),
                   ),
                 ),
@@ -614,17 +614,17 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel', style: TextStyle(color: Colors.white)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
             ElevatedButton(
               onPressed: () {
                 widget.onAddEmployee(newEmployee);
                 Navigator.of(context).pop();
               },
-              child: Text('Add', style: TextStyle(color: Colors.white)),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent),
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
               ),
+              child: const Text('Add', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -646,7 +646,7 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             'Edit Employee',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
@@ -658,89 +658,89 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Name',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     filled: true,
                     fillColor: Colors.black,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: TextEditingController(text: updatedEmployee.name),
                   onChanged: (value) {
                     updatedEmployee.name = value;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Email',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     filled: true,
                     fillColor: Colors.black,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: TextEditingController(text: updatedEmployee.email),
                   onChanged: (value) {
                     updatedEmployee.email = value;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Mobile Number',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     filled: true,
                     fillColor: Colors.black,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: TextEditingController(text: updatedEmployee.mobileNumber),
                   onChanged: (value) {
                     updatedEmployee.mobileNumber = value;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Profile Image',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     filled: true,
                     fillColor: Colors.black,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: TextEditingController(text: updatedEmployee.profileImage),
                   onChanged: (value) {
                     updatedEmployee.profileImage = value;
@@ -754,17 +754,17 @@ class _ManageEmployeesSectionState extends State<ManageEmployeesSection> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel', style: TextStyle(color: Colors.white)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
             ElevatedButton(
               onPressed: () {
                 widget.onEditEmployee(updatedEmployee);
                 Navigator.of(context).pop();
               },
-              child: Text('Save', style: TextStyle(color: Colors.white)),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent),
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
               ),
+              child: const Text('Save', style: TextStyle(color: Colors.white)),
             ),
           ],
         );

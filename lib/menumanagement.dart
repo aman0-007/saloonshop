@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,7 +29,7 @@ class Menu {
 
 
 class Menumanagement extends StatefulWidget {
-  const Menumanagement({Key? key}) : super(key: key);
+  const Menumanagement({super.key});
 
   @override
   State<Menumanagement> createState() => _MenumanagementState();
@@ -65,7 +64,7 @@ class _MenumanagementState extends State<Menumanagement> {
           'Manage Menu',
           style: TextStyle(color: Colors.white),
         ),
-        iconTheme: IconThemeData(color: Colors.white), // Icon color set to white
+        iconTheme: const IconThemeData(color: Colors.white), // Icon color set to white
       ),
       body: Column(
         children: [
@@ -78,7 +77,7 @@ class _MenumanagementState extends State<Menumanagement> {
                   onTap: () {
                     _pageController.animateToPage(
                       0,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
                   },
@@ -98,7 +97,7 @@ class _MenumanagementState extends State<Menumanagement> {
                         height: 5,
                         width: 100, // Expanded width for the underline
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           decoration: BoxDecoration(
                             color: _selectedTabIndex == 0
                                 ? Colors.blueAccent
@@ -114,7 +113,7 @@ class _MenumanagementState extends State<Menumanagement> {
                   onTap: () {
                     _pageController.animateToPage(
                       1,
-                      duration: Duration(milliseconds: 300),
+                      duration: const Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
                   },
@@ -134,7 +133,7 @@ class _MenumanagementState extends State<Menumanagement> {
                         height: 5,
                         width: 150,
                         child: AnimatedContainer(
-                          duration: Duration(milliseconds: 300),
+                          duration: const Duration(milliseconds: 300),
                           decoration: BoxDecoration(
                             color: _selectedTabIndex == 1
                                 ? Colors.blueAccent
@@ -197,12 +196,12 @@ class _MenumanagementState extends State<Menumanagement> {
 class MyMenuSection extends StatelessWidget {
   final List<Menu> menus;
 
-  MyMenuSection({required this.menus});
+  const MyMenuSection({super.key, required this.menus});
 
   @override
   Widget build(BuildContext context) {
     return menus.isEmpty
-        ? Center(
+        ? const Center(
       child: Text(
         'No menus',
         style: TextStyle(color: Colors.white),
@@ -212,7 +211,7 @@ class MyMenuSection extends StatelessWidget {
       itemCount: menus.length,
       itemBuilder: (context, index) {
         return ListTile(
-          leading: CircleAvatar(
+          leading: const CircleAvatar(
             //backgroundImage: AssetImage(menus[index].profileImage),
           ),
           title: Text(menus[index].name),
@@ -228,7 +227,7 @@ class ManageMenuSection extends StatefulWidget {
   final Function(Menu) onDeleteMenu;
   final Function(Menu) onEditMenu;
 
-  ManageMenuSection({
+  const ManageMenuSection({super.key, 
     required this.menus,
     required this.onAddMenu,
     required this.onDeleteMenu,
@@ -243,7 +242,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
   final TextEditingController _menuNameController = TextEditingController();
   final TextEditingController _menuPriceController = TextEditingController();
   final TextEditingController _menuTimeController = TextEditingController();
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
   List<Menu> filteredMenu = [];
   final ImagePicker _picker = ImagePicker();
   bool _isTextFieldFocused = false;
@@ -272,7 +271,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
               hintText: 'Search',
               hintStyle: TextStyle(color: Colors.grey.withOpacity(0.5)),
               border: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey),
+                borderSide: const BorderSide(color: Colors.grey),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               enabledBorder: OutlineInputBorder(
@@ -280,7 +279,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                 borderRadius: BorderRadius.circular(5.0),
               ),
               focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.blueAccent),
+                borderSide: const BorderSide(color: Colors.blueAccent),
                 borderRadius: BorderRadius.circular(5.0),
               ),
               suffixIcon: _searchController.text.isNotEmpty
@@ -293,7 +292,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
               )
                   : null,
             ),
-            style: TextStyle(color: Colors.white),
+            style: const TextStyle(color: Colors.white),
             onChanged: (value) {
               _filterEmployees(value);
             },
@@ -305,7 +304,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
             itemCount: filteredMenu.length,
             itemBuilder: (context, index) {
               return Card(
-                margin: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
                 child: ListTile(
                   title: Text(filteredMenu[index].name),
                   subtitle: Row(children: [Text(filteredMenu[index].time),Text(filteredMenu[index].price),],),
@@ -313,13 +312,13 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit),
+                        icon: const Icon(Icons.edit),
                         onPressed: () {
                           _showEditEmployeeDialog(context, filteredMenu[index]);
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete),
+                        icon: const Icon(Icons.delete),
                         onPressed: () {
                           widget.onDeleteMenu(filteredMenu[index]);
                         },
@@ -341,7 +340,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                   _showAddEmployeeDialog(context);
                 },
                 backgroundColor: Colors.blueAccent,
-                child: Icon(Icons.add, color: Colors.white),
+                child: const Icon(Icons.add, color: Colors.white),
               ),
             ),
           ],
@@ -377,14 +376,14 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             'Add New Menu',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 14),
           ),
           backgroundColor: Colors.black,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
-            side: BorderSide(color: Colors.blueAccent), // Border color here
+            side: const BorderSide(color: Colors.blueAccent), // Border color here
           ),
 
           content: SingleChildScrollView(
@@ -438,7 +437,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                     // Handle text changes
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _menuPriceController,
                   decoration: InputDecoration(
@@ -479,7 +478,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                     // Handle text changes
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextFormField(
                   controller: _menuTimeController,
                   decoration: InputDecoration(
@@ -520,7 +519,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                     // Handle text changes
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
               ],
             ),
           ),
@@ -529,17 +528,17 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel', style: TextStyle(color: Colors.white)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
             ElevatedButton(
               onPressed: () {
                 widget.onAddMenu(newMenu);
                 Navigator.of(context).pop();
               },
-              child: Text('Add', style: TextStyle(color: Colors.white)),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent),
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
               ),
+              child: const Text('Add', style: TextStyle(color: Colors.white)),
             ),
           ],
         );
@@ -559,7 +558,7 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text(
+          title: const Text(
             'Edit Menu',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
           ),
@@ -571,72 +570,72 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Name',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     filled: true,
                     fillColor: Colors.black,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: TextEditingController(text: updateMenu.name),
                   onChanged: (value) {
                     updateMenu.name = value;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Price',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     filled: true,
                     fillColor: Colors.black,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: TextEditingController(text: updateMenu.price),
                   onChanged: (value) {
                     updateMenu.price = value;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
                   decoration: InputDecoration(
                     labelText: 'Time',
-                    labelStyle: TextStyle(color: Colors.white),
+                    labelStyle: const TextStyle(color: Colors.white),
                     border: OutlineInputBorder(
                       borderSide: BorderSide(color: Colors.blueAccent.withOpacity(0.5)),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide: BorderSide(color: Colors.white, width: 2.0),
+                      borderSide: const BorderSide(color: Colors.white, width: 2.0),
                       borderRadius: BorderRadius.circular(5.0),
                     ),
                     filled: true,
                     fillColor: Colors.black,
-                    contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                    contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                   ),
-                  style: TextStyle(color: Colors.white),
+                  style: const TextStyle(color: Colors.white),
                   controller: TextEditingController(text: updateMenu.time),
                   onChanged: (value) {
                     updateMenu.time = value;
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
               ],
             ),
           ),
@@ -645,17 +644,17 @@ class _ManageMenuSectionState extends State<ManageMenuSection> {
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel', style: TextStyle(color: Colors.white)),
+              child: const Text('Cancel', style: TextStyle(color: Colors.white)),
             ),
             ElevatedButton(
               onPressed: () {
                 widget.onEditMenu(updateMenu);
                 Navigator.of(context).pop();
               },
-              child: Text('Save', style: TextStyle(color: Colors.white)),
               style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.blueAccent),
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent),
               ),
+              child: const Text('Save', style: TextStyle(color: Colors.white)),
             ),
           ],
         );

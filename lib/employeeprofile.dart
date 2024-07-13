@@ -49,7 +49,7 @@ class _EmployeeprofileState extends State<Employeeprofile> {
               ),
             ),
             const SizedBox(height: 20),
-            Expanded(
+            const Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -57,27 +57,27 @@ class _EmployeeprofileState extends State<Employeeprofile> {
                   children: [
                     ProfileRow(
                       title: 'Owner',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Shop name',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Description',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Location',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Employees',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Working Hours',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                   ],
                 ),
@@ -96,10 +96,10 @@ class ProfileRow extends StatelessWidget {
   final Widget value;
 
   const ProfileRow({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

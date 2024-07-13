@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class Shopprofile extends StatefulWidget {
-  const Shopprofile({Key? key}) : super(key: key);
+  const Shopprofile({super.key});
 
   @override
   State<Shopprofile> createState() => _ShopprofileState();
@@ -49,7 +49,7 @@ class _ShopprofileState extends State<Shopprofile> {
               ),
             ),
             const SizedBox(height: 20),
-            Expanded(
+            const Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -57,27 +57,27 @@ class _ShopprofileState extends State<Shopprofile> {
                   children: [
                     ProfileRow(
                       title: 'Owner',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Shop name',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Description',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Location',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Employees',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                     ProfileRow(
                       title: 'Working Hours',
-                      value: const Text(' - '), // Default value
+                      value: Text(' - '), // Default value
                     ),
                   ],
                 ),
@@ -96,10 +96,10 @@ class ProfileRow extends StatelessWidget {
   final Widget value;
 
   const ProfileRow({
-    Key? key,
+    super.key,
     required this.title,
     required this.value,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
