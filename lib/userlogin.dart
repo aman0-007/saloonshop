@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:saloonshop/authentication.dart';
 import 'package:saloonshop/dashboard.dart';
-import 'package:saloonshop/saveuserdata.dart';
 import 'package:saloonshop/location.dart';
 
 class UserLogin extends StatefulWidget {
@@ -21,7 +20,6 @@ class _UserLoginState extends State<UserLogin> {
   Position? _currentPosition;
 
   final ULocation _locationService = ULocation();
-  final SaveUserData _userDataService = SaveUserData();
 
   final Authentication _authentication = Authentication();
 
@@ -195,12 +193,12 @@ class _UserLoginState extends State<UserLogin> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          await _userDataService.saveUserLoginDetails(
-                            context: context,
-                            email: _emailController.text,
-                            password: _passwordController.text,
-                            currentPosition: _currentPosition,
-                          );
+                          // await _userDataService.saveUserLoginDetails(
+                          //   context: context,
+                          //   email: _emailController.text,
+                          //   password: _passwordController.text,
+                          //   currentPosition: _currentPosition,
+                          // );
 
                           String email = _emailController.text;
                           String password = _passwordController.text;

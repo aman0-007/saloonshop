@@ -223,13 +223,15 @@ class Authentication {
   Future<void> addShopMenuItem(BuildContext context, String name, String price, String time) async {
     try {
       // Get the current logged-in user
-      User? currentUser = _auth.currentUser;
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+      String? userEmail = prefs.getString('email');
 
-      if (currentUser != null) {
+      if (userId != null && userEmail != null) {
         // Save menu data to Firestore under the current shop's menu sub-collection
         await FirebaseFirestore.instance
             .collection('shops')
-            .doc(currentUser.uid)
+            .doc(userId)
             .collection('menu')
             .add({
           'menuName': name,
