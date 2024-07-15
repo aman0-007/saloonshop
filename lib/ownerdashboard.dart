@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saloonshop/employeemangement.dart';
 import 'package:saloonshop/menumanagement.dart';
+import 'package:saloonshop/ownermanage.dart';
 import 'package:saloonshop/shopprofile.dart';
 
 class Ownerdashboard extends StatefulWidget {
@@ -112,6 +113,17 @@ class _OwnerdashboardState extends State<Ownerdashboard> {
                       title: const Text('Appointments', style: TextStyle(color: Colors.blueAccent)),
                       onTap: () {
                         // Navigate to appointments
+                      },
+                    ),
+                    ListTile(
+                      leading: const Icon(Icons.settings, color: Colors.blueAccent),
+                      title: const Text('Manage', style: TextStyle(color: Colors.blueAccent)),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const Ownermanage()),
+                        );
                       },
                     ),
                     const Divider(), // Divider before Sign Out
