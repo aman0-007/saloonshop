@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:saloonshop/Color/colors.dart';
 import 'package:saloonshop/authentication.dart';
 
 class Ownermanage extends StatefulWidget {
@@ -83,7 +84,7 @@ class _OwnermanageState extends State<Ownermanage> {
             return AlertDialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.0),
-                side: BorderSide(color: Colors.blueAccent, width: 2.0),
+                side: BorderSide(color: AppColors.primaryYellow, width: 2.0),
               ),
               backgroundColor: Colors.black,
               content: SingleChildScrollView(
@@ -101,7 +102,7 @@ class _OwnermanageState extends State<Ownermanage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Divider(
-                        color: Colors.blueAccent,
+                        color: AppColors.primaryYellow,
                         thickness: 1,
                       ),
                     ),
@@ -175,7 +176,7 @@ class _OwnermanageState extends State<Ownermanage> {
                             Navigator.of(context).pop();
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent,
+                            backgroundColor: AppColors.primaryYellow,
                           ),
                           child: Text(
                             'Add',
@@ -205,7 +206,7 @@ class _OwnermanageState extends State<Ownermanage> {
         Switch(
           value: isSelected,
           onChanged: onChanged,
-          activeColor: Colors.blueAccent,
+          activeColor: AppColors.primaryYellow,
           inactiveThumbColor: Colors.grey,
         ),
       ],
@@ -226,14 +227,14 @@ class _OwnermanageState extends State<Ownermanage> {
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueAccent),
+          border: Border.all(color: AppColors.primaryYellow),
           borderRadius: BorderRadius.circular(5.0),
         ),
         child: Text(
           '${selectedTime.format(context)}',
           textAlign: TextAlign.center,
           style: TextStyle(
-            color: Colors.blueAccent,
+            color: AppColors.primaryYellow,
             fontSize: 16.0,
           ),
         ),
@@ -246,7 +247,7 @@ class _OwnermanageState extends State<Ownermanage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: AppColors.primaryYellow,
         title: const Text(
           'Manage Timings',
           style: TextStyle(color: Colors.white),
@@ -264,7 +265,7 @@ class _OwnermanageState extends State<Ownermanage> {
               decoration: BoxDecoration(
                 color: Colors.black,
                 borderRadius: BorderRadius.circular(10.0),
-                border: Border.all(color: Colors.blueAccent),
+                border: Border.all(color: AppColors.primaryYellow),
               ),
               child: IntrinsicHeight(
                 child: Column(
@@ -290,14 +291,14 @@ class _OwnermanageState extends State<Ownermanage> {
                             decoration: BoxDecoration(
                               color: Colors.black,
                               borderRadius: BorderRadius.circular(5.0),
-                              border: Border.all(color: Colors.blueAccent),
+                              border: Border.all(color: AppColors.primaryYellow),
                             ),
                             child: DropdownButtonHideUnderline(
                               child: DropdownButton<String>(
                                 isExpanded: true,
-                                icon: Icon(Icons.arrow_drop_down, color: Colors.blueAccent),
+                                icon: Icon(Icons.arrow_drop_down, color: AppColors.primaryYellow),
                                 value: _selectedSlotTime,
-                                style: TextStyle(color: Colors.blueAccent), // Default text color
+                                style: TextStyle(color: AppColors.primaryYellow), // Default text color
                                 dropdownColor: Colors.black,
                                 onChanged: (String? newValue) {
                                   setState(() {
@@ -312,13 +313,13 @@ class _OwnermanageState extends State<Ownermanage> {
                                     child: Container(
                                       decoration: BoxDecoration(
                                         border: Border(
-                                          bottom: BorderSide(color: Colors.blueAccent),
+                                          bottom: BorderSide(color: AppColors.primaryYellow),
                                         ),
                                       ),
                                       padding: EdgeInsets.symmetric(vertical: 8.0),
                                       child: Text(
                                         value,
-                                        style: TextStyle(color: Colors.blueAccent),
+                                        style: TextStyle(color: AppColors.primaryYellow),
                                       ),
                                     ),
                                   );
@@ -342,7 +343,7 @@ class _OwnermanageState extends State<Ownermanage> {
             child: Container(
               decoration: BoxDecoration(
                 color: Colors.black,
-                border: Border.all(color: Colors.blueAccent, width: 2.0), // Increased border width to 2.0
+                border: Border.all(color: AppColors.primaryYellow, width: 2.0), // Increased border width to 2.0
                 borderRadius: BorderRadius.circular(10.0), // Rounded corners with radius 10.0
               ),
               child: Column(
@@ -368,7 +369,7 @@ class _OwnermanageState extends State<Ownermanage> {
                           padding: const EdgeInsets.all(8.0),
                           child: Icon(
                             Icons.edit,
-                            color: Colors.blueAccent,
+                            color: AppColors.primaryYellow,
                           ),
                         ),
                       ),
@@ -377,7 +378,7 @@ class _OwnermanageState extends State<Ownermanage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Divider(
-                      color: Colors.blueAccent,
+                      color: AppColors.primaryYellow,
                       thickness: 1,
                     ),
                   ),

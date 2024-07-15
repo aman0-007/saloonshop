@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:saloonshop/Color/colors.dart';
 import 'package:saloonshop/register.dart';
 import 'package:saloonshop/shoplogin.dart';
 import 'package:saloonshop/userlogin.dart';
@@ -28,7 +29,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                 child: Text(
                   "Register",
                   style: TextStyle(
-                    color: Colors.blueAccent,
+                    color: AppColors.primaryYellow,
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                   ),
@@ -46,7 +47,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                 child: Container(
                   width: deviceWidth * 0.85, // 85% of device width
                   decoration: BoxDecoration(
-                    border: Border.all(color: Colors.blueAccent), // Blue accent border
+                    border: Border.all(color: AppColors.primaryYellow), // Blue accent border
                     borderRadius: BorderRadius.circular(10.0), // Rounded corners
                     color: Colors.transparent, // Transparent body color
                   ),
@@ -57,11 +58,11 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                     children: [
                       Text(
                         "Login Type",
-                        style: TextStyle(color: Colors.blueAccent.withOpacity(0.8), fontSize: 18.0),
+                        style: TextStyle(color: AppColors.primaryYellow.withOpacity(0.8), fontSize: 18.0),
                       ),
                       const SizedBox(height: 10.0),
                       Divider(
-                        color: Colors.blueAccent.withOpacity(0.5),
+                        color: AppColors.primaryYellow.withOpacity(0.5),
                         thickness: 1.0,
                       ),
                       const SizedBox(height: 20.0),
@@ -75,7 +76,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent, // Blue accent background
+                            backgroundColor: AppColors.primaryYellow, // Blue accent background
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0), // Circular button
                             ),
@@ -98,7 +99,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                             );
                           },
                           style: OutlinedButton.styleFrom(
-                            side: const BorderSide(color: Colors.blueAccent), // Blue accent border
+                            side: const BorderSide(color: AppColors.primaryYellow), // Blue accent border
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(30.0), // Circular button
                             ),
@@ -106,7 +107,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                           ),
                           child: const Text(
                             "User Login",
-                            style: TextStyle(color: Colors.blueAccent),
+                            style: TextStyle(color: AppColors.primaryYellow),
                           ),
                         ),
                       ),

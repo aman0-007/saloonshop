@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:saloonshop/Color/colors.dart';
 
 class Employeeprofile extends StatefulWidget {
   const Employeeprofile({super.key});
@@ -25,7 +26,7 @@ class _EmployeeprofileState extends State<Employeeprofile> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.height * 0.25,
               decoration: BoxDecoration(
-                color: Colors.blueAccent,
+                color: AppColors.primaryYellow,
                 image: DecorationImage(
                   image: AssetImage(bannerImagePath),
                   fit: BoxFit.cover,
@@ -42,7 +43,7 @@ class _EmployeeprofileState extends State<Employeeprofile> {
                       ? const Icon(
                     Icons.person,
                     size: 80,
-                    color: Colors.blueAccent,
+                    color: AppColors.primaryYellow,
                   )
                       : null,
                 ),
@@ -111,7 +112,7 @@ class ProfileRow extends StatelessWidget {
           Text(
             '$title:',
             style: const TextStyle(
-              color: Colors.blueAccent,
+              color: AppColors.primaryYellow,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),

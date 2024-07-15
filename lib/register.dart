@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:saloonshop/Color/colors.dart';
 import 'package:saloonshop/authentication.dart'; // Replace with correct path to your authentication file
 import 'package:saloonshop/location.dart';
 import 'package:saloonshop/accountoptionpage.dart';
@@ -47,7 +48,7 @@ class _RegisterState extends State<Register> {
                 width: deviceWidth * 0.85,
                 padding: const EdgeInsets.all(20.0),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blueAccent),
+                  border: Border.all(color: AppColors.primaryYellow),
                   borderRadius: BorderRadius.circular(10.0),
                   color: Colors.black,
                 ),
@@ -65,7 +66,7 @@ class _RegisterState extends State<Register> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30.0),
                                 color:
-                                _isShopRegister ? Colors.blueAccent : Colors.black,
+                                _isShopRegister ? AppColors.primaryYellow : Colors.black,
                               ),
                               child: ElevatedButton(
                                 onPressed: () {
@@ -84,7 +85,7 @@ class _RegisterState extends State<Register> {
                                   style: TextStyle(
                                     color: _isShopRegister
                                         ? Colors.white
-                                        : Colors.blueAccent,
+                                        : AppColors.primaryYellow,
                                   ),
                                 ),
                               ),
@@ -94,7 +95,7 @@ class _RegisterState extends State<Register> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(30.0),
                                 color:
-                                !_isShopRegister ? Colors.blueAccent : Colors.black,
+                                !_isShopRegister ? AppColors.primaryYellow : Colors.black,
                               ),
                               child: ElevatedButton(
                                 onPressed: () {
@@ -113,7 +114,7 @@ class _RegisterState extends State<Register> {
                                   style: TextStyle(
                                     color: !_isShopRegister
                                         ? Colors.white
-                                        : Colors.blueAccent,
+                                        : AppColors.primaryYellow,
                                   ),
                                 ),
                               ),
@@ -123,7 +124,7 @@ class _RegisterState extends State<Register> {
                         Padding(
                           padding: const EdgeInsets.only(top: 15.0),
                           child: Divider(
-                            color: Colors.blueAccent.withOpacity(0.5),
+                            color: AppColors.primaryYellow.withOpacity(0.5),
                             thickness: 1.5,
                           ),
                         ),
@@ -137,7 +138,7 @@ class _RegisterState extends State<Register> {
                               decoration: InputDecoration(
                                 hintText: 'Shop Name',
                                 hintStyle: TextStyle(
-                                    color: Colors.blueAccent
+                                    color: AppColors.primaryYellow
                                         .withOpacity(0.5)),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(
@@ -147,7 +148,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
-                                      color: Colors.blueAccent, width: 2.0),
+                                      color: AppColors.primaryYellow, width: 2.0),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 filled: true,
@@ -179,7 +180,7 @@ class _RegisterState extends State<Register> {
                                 hintText:
                                 'Registration Number / GST Number',
                                 hintStyle: TextStyle(
-                                    color: Colors.blueAccent
+                                    color: AppColors.primaryYellow
                                         .withOpacity(0.5)),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(
@@ -189,7 +190,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
-                                      color: Colors.blueAccent, width: 2.0),
+                                      color: AppColors.primaryYellow, width: 2.0),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 filled: true,
@@ -231,7 +232,7 @@ class _RegisterState extends State<Register> {
                               icon: const Icon(Icons.upload),
                               label: const Text('Upload Profile Image'),
                               style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent), // background color
+                                backgroundColor: WidgetStateProperty.all<Color>(AppColors.primaryYellow), // background color
                                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // foreground color
                                 shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -265,7 +266,7 @@ class _RegisterState extends State<Register> {
                               icon: const Icon(Icons.upload),
                               label: const Text('Upload Banner Image'),
                               style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent), // background color
+                                backgroundColor: WidgetStateProperty.all<Color>(AppColors.primaryYellow), // background color
                                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // foreground color
                                 shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -304,7 +305,7 @@ class _RegisterState extends State<Register> {
                               icon: const Icon(Icons.location_on),
                               label: const Text('Select Location'),
                               style: ButtonStyle(
-                                backgroundColor: WidgetStateProperty.all<Color>(Colors.blueAccent), // Background color
+                                backgroundColor: WidgetStateProperty.all<Color>(AppColors.primaryYellow), // Background color
                                 foregroundColor: WidgetStateProperty.all<Color>(Colors.white), // Text color
                                 shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -328,7 +329,7 @@ class _RegisterState extends State<Register> {
                           decoration: InputDecoration(
                             hintText: 'Email',
                             hintStyle:
-                            TextStyle(color: Colors.blueAccent.withOpacity(0.5)),
+                            TextStyle(color: AppColors.primaryYellow.withOpacity(0.5)),
                             border: OutlineInputBorder(
                               borderSide: BorderSide(
                                   color: Colors.grey.withOpacity(0.5), width: 1.0),
@@ -336,7 +337,7 @@ class _RegisterState extends State<Register> {
                             ),
                             focusedBorder: OutlineInputBorder(
                               borderSide:
-                              const BorderSide(color: Colors.blueAccent, width: 2.0),
+                              const BorderSide(color: AppColors.primaryYellow, width: 2.0),
                               borderRadius: BorderRadius.circular(5),
                             ),
                             filled: true,
@@ -369,7 +370,7 @@ class _RegisterState extends State<Register> {
                               decoration: InputDecoration(
                                 hintText: 'Password',
                                 hintStyle: TextStyle(
-                                    color: Colors.blueAccent.withOpacity(0.5)),
+                                    color: AppColors.primaryYellow.withOpacity(0.5)),
                                 border: OutlineInputBorder(
                                   borderSide: BorderSide(
                                       color: Colors.grey.withOpacity(0.5),
@@ -378,7 +379,7 @@ class _RegisterState extends State<Register> {
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderSide: const BorderSide(
-                                      color: Colors.blueAccent, width: 2.0),
+                                      color: AppColors.primaryYellow, width: 2.0),
                                   borderRadius: BorderRadius.circular(5),
                                 ),
                                 filled: true,
@@ -467,7 +468,7 @@ class _RegisterState extends State<Register> {
                             }
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueAccent, // Background color
+                            backgroundColor: AppColors.primaryYellow, // Background color
                             foregroundColor: Colors.white, // Text color
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10.0),

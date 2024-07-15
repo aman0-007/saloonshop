@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:saloonshop/Color/colors.dart';
 import 'package:saloonshop/authentication.dart';
 import 'package:saloonshop/ownerdashboard.dart';
 
@@ -54,7 +55,7 @@ class _ShoploginState extends State<Shoplogin> {
                       ),
                     ],
                     border: Border.all(
-                      color: Colors.blueAccent,
+                      color: AppColors.primaryYellow,
                       width: 2.0,
                     ),
                   ),
@@ -62,10 +63,10 @@ class _ShoploginState extends State<Shoplogin> {
                     children: [
                       const Text(
                         "Login",
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.blueAccent),
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.primaryYellow),
                       ),
                       const Divider(
-                        color: Colors.blueAccent,
+                        color: AppColors.primaryYellow,
                         thickness: 1,
                       ),
                       SizedBox(height: deviceHeight * 0.03),
@@ -74,7 +75,7 @@ class _ShoploginState extends State<Shoplogin> {
                         decoration: InputDecoration(
                           hintText: 'Username',
                           hintStyle:
-                          TextStyle(color: Colors.blueAccent.withOpacity(0.5)),
+                          TextStyle(color: AppColors.primaryYellow.withOpacity(0.5)),
                           border: OutlineInputBorder(
                             borderSide: BorderSide(
                               color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
@@ -83,7 +84,7 @@ class _ShoploginState extends State<Shoplogin> {
                           ),
                           focusedBorder: const OutlineInputBorder(
                             borderSide: BorderSide(
-                              color: Colors.blueAccent,
+                              color: AppColors.primaryYellow,
                               width: 2.0,
                             ),
                           ),
@@ -120,7 +121,7 @@ class _ShoploginState extends State<Shoplogin> {
                             decoration: InputDecoration(
                               hintText: 'Password',
                               hintStyle:
-                              TextStyle(color: Colors.blueAccent.withOpacity(0.5)),
+                              TextStyle(color: AppColors.primaryYellow.withOpacity(0.5)),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide(
                                   color: _isTextFieldFocused ? Colors.grey : Colors.grey.withOpacity(0.5),
@@ -129,7 +130,7 @@ class _ShoploginState extends State<Shoplogin> {
                               ),
                               focusedBorder: const OutlineInputBorder(
                                 borderSide: BorderSide(
-                                  color: Colors.blueAccent,
+                                  color: AppColors.primaryYellow,
                                   width: 2.0,
                                 ),
                               ),
@@ -183,7 +184,7 @@ class _ShoploginState extends State<Shoplogin> {
                           }
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blueAccent, // Background color
+                          backgroundColor: AppColors.primaryYellow, // Background color
                           foregroundColor: Colors.white,  // Text color
                           padding: EdgeInsets.symmetric(vertical: deviceHeight*0.013, horizontal: deviceWidth*0.21),
                           shape: RoundedRectangleBorder(
