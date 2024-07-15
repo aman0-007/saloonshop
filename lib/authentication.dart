@@ -7,8 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:saloonshop/accountoptionpage.dart';
 
 class Authentication {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -34,6 +33,7 @@ class Authentication {
       // Save user data to Firestore in the 'users' collection
       await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
         'email': email,
+        'role' : "user",
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -67,9 +67,10 @@ class Authentication {
         'shopName': shopName,
         'email': email,
         'registrationGstNumber': registrationGstNumber,
-        'currentPosition':GeoPoint(currentPosition.latitude, currentPosition.longitude),
+        'currentPosition': GeoPoint(currentPosition.latitude, currentPosition.longitude),
         'profileImage': profileImageUrl,
         'bannerImage': bannerImageUrl,
+        'role' : "shop",
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -106,15 +107,42 @@ class Authentication {
           idToken: googleAuth.idToken,
         );
         final UserCredential userCredential = await _auth.signInWithCredential(credential);
+        User? user = userCredential.user;
 
-        if (userCredential.user != null) {
-          // Navigate to Ownerside page upon successful sign-in
-          // Navigator.pushReplacement(
-          //   context,
-          //   MaterialPageRoute(builder: (context) => const Ownerside()),
-          // );
-          return userCredential.user;
+        if (user != null) {
+          // Fetch user role from Firestore
+          DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(user.uid).get();
+
+          if (userDoc.exists) {
+            String role = userDoc['role'] ?? '';
+
+            if (role == 'user') {
+              // Redirect to user home page
+              // Navigator.pushReplacement(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const UserHomePage()), // Replace with actual user home page
+              // );
+            } else if (role == 'shop') {
+              // Redirect to shop home page
+              // Navigator.pushReplacement(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const ShopHomePage()), // Replace with actual shop home page
+              // );
+            } else {
+              // Redirect to a different page if the role is unknown
+              // Navigator.pushReplacement(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => const UnknownRolePage()), // Replace with actual page for unknown roles
+              // );
+            }
+          } else {
+            // Handle case where user document does not exist
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('User document not found')),
+            );
+          }
         }
+        return user;
       }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -123,6 +151,7 @@ class Authentication {
     }
     return null;
   }
+
 
   // Sign in with email and password
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
@@ -133,17 +162,12 @@ class Authentication {
       );
 
       User? user = userCredential.user;
-      if (user != null){
-        await saveUserSession(user);
-      }
-
       return user;
     } catch (e) {
       print('Sign-in failed: $e');
       return null;
     }
   }
-
 
   Future<String> _uploadImage(File? image, String folderName) async {
     if (image == null) return '';
@@ -159,14 +183,7 @@ class Authentication {
     }
   }
 
-  Future<void> registerEmployeeWithEmailAndPassword(
-      BuildContext context,
-      String employeeName,
-      String mobileNumber,
-      String email,
-      String password,
-      File profileImage,
-      ) async {
+  Future<void> registerEmployeeWithEmailAndPassword( BuildContext context, String employeeName, String mobileNumber, String email, String password, File profileImage,) async {
     try {
       // Register the new employee using Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
@@ -177,11 +194,10 @@ class Authentication {
       // Upload the employee profile image and get the URL
       String profileImageUrl = await _uploadImage(profileImage, 'employee_profile_images');
 
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? userId = prefs.getString('userId');
-      String? userEmail = prefs.getString('email');
+      // Get current user ID
+      String? userId = _auth.currentUser?.uid;
 
-      if (userId != null && userEmail != null) {
+      if (userId != null) {
         // Save the new employee data to Firestore under the current shop's employees sub-collection
         await FirebaseFirestore.instance
             .collection('shops')
@@ -219,15 +235,12 @@ class Authentication {
     }
   }
 
-
   Future<void> addShopMenuItem(BuildContext context, String name, String price, String time) async {
     try {
-      // Get the current logged-in user
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? userId = prefs.getString('userId');
-      String? userEmail = prefs.getString('email');
+      // Get current user ID
+      String? userId = _auth.currentUser?.uid;
 
-      if (userId != null && userEmail != null) {
+      if (userId != null) {
         // Save menu data to Firestore under the current shop's menu sub-collection
         await FirebaseFirestore.instance
             .collection('shops')
@@ -257,12 +270,53 @@ class Authentication {
     }
   }
 
+  // Sign out
+  Future<void> signOut(BuildContext context) async {
+    try {
+      await _auth.signOut();
+      await googleSignIn.signOut();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Signed out')),
+      );
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Accountoptionpage()),
+      );
+    } catch (error) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to sign out')),
+      );
+    }
+  }
 
-  Future<void> saveUserSession(User user) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userId', user.uid);
-    await prefs.setString('email', user.email ?? '');
+  User? getCurrentUser() {
+    return _auth.currentUser;
+  }
+
+  bool isUserLoggedIn() {
+    return _auth.currentUser != null;
   }
 }
 
+class AuthWrapper extends StatelessWidget {
+  final Widget home;
+  final Widget login;
 
+  const AuthWrapper({required this.home, required this.login, Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        }
+        if (snapshot.hasData) {
+          return home;
+        }
+        return login;
+      },
+    );
+  }
+}
