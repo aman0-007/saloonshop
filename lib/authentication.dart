@@ -22,6 +22,19 @@ class Authentication {
     ],
   );
 
+  Map<String, bool> _selectedDays = {
+    'Monday': false,
+    'Tuesday': false,
+    'Wednesday': false,
+    'Thursday': false,
+    'Friday': false,
+    'Saturday': false,
+    'Sunday': false,
+  };
+
+  Map<String, TimeOfDay?> _openTimes = {};
+  Map<String, TimeOfDay?> _closeTimes = {};
+
   // User Registration
   Future<void> registerUserWithEmailAndPassword(BuildContext context, String email, String password) async {
     try {
@@ -78,7 +91,6 @@ class Authentication {
           content: Text('Shop registration successful'),
         ),
       );
-
       // Navigate to the owner side page upon successful registration
 
       // Navigator.pushReplacement(
@@ -296,6 +308,86 @@ class Authentication {
   bool isUserLoggedIn() {
     return _auth.currentUser != null;
   }
+
+  Future<void> saveSlotTime(String slotTime) async {
+    try {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userId = prefs.getString('userId') ?? '';
+
+      // Check if document exists
+      var shopRef = FirebaseFirestore.instance.collection('shops').doc(userId);
+      var shopDoc = await shopRef.get();
+
+      if (shopDoc.exists) {
+        // Document exists, update slotTime
+        await shopRef.update({
+          'slotTime': slotTime,
+        });
+      } else {
+        // Document doesn't exist, create new document with initial data
+        await shopRef.set({
+          'slotTime': slotTime,
+          // Add other initial fields if needed
+        });
+      }
+
+      print('Slot time updated successfully');
+    } catch (e) {
+      print('Error updating slot time: $e');
+    }
+  }
+
+  Future<void> saveShopTimings() async {
+    try {
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userId = prefs.getString('userId') ?? '';
+
+      // Check if document exists
+      var shopRef = FirebaseFirestore.instance.collection('shops').doc(userId);
+      var shopDoc = await shopRef.get();
+
+      // Prepare timings map to store in Firestore
+      Map<String, Map<String, dynamic>> timings = {};
+
+      _selectedDays.forEach((day, isSelected) {
+        if (isSelected) {
+          timings[day] = {
+            'openTime': _combineTime(_openTimes[day]!), // Combine open hour and minute
+            'closeTime': _combineTime(_closeTimes[day]!), // Combine close hour and minute
+          };
+        } else {
+          timings[day] = {
+            'status': 'closed', // Indicate that the shop is closed on this day
+          };
+        }
+      });
+
+      if (shopDoc.exists) {
+        // Document exists, update shopTimings
+        await shopRef.update({
+          'shopTimings': timings,
+        });
+      } else {
+        // Document doesn't exist, create new document with initial data
+        await shopRef.set({
+          'shopTimings': timings,
+          // Add other initial fields if needed
+        });
+      }
+
+      print('Shop timings updated successfully');
+    } catch (e) {
+      print('Error updating shop timings: $e');
+    }
+  }
+
+
+  // Helper function to combine hour and minute into a single TimeOfDay object
+  TimeOfDay _combineTime(TimeOfDay time) {
+    return TimeOfDay(hour: time.hour, minute: time.minute);
+  }
+
+
 }
 
 class AuthWrapper extends StatelessWidget {

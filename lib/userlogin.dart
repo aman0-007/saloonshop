@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saloonshop/authentication.dart';
 import 'package:saloonshop/ownerdashboard.dart';
+import 'package:saloonshop/userdashboard.dart';
 
 class Userlogin extends StatefulWidget {
   const Userlogin({super.key});
@@ -163,10 +164,10 @@ class _UserloginState extends State<Userlogin> {
                     String password = _passwordController.text;
                     User? user = await _authentication.signInWithEmailAndPassword(email, password);
                     if (user != null) {
-                      // Navigator.pushReplacement(
-                      //   context,
-                      //   MaterialPageRoute(builder: (context) =>  const Ownerdashboard()),
-                      // );
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) =>  Userdashboard()),
+                      );
                     }
                   },
                   style: ElevatedButton.styleFrom(

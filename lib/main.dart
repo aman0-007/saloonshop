@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:saloonshop/accountoptionpage.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:saloonshop/ownermanage.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title : ""),
+      home: const MyHomePage(title: "title"),
     );
   }
 }
