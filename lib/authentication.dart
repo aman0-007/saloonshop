@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +7,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class Authentication {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -13,7 +16,7 @@ class Authentication {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _picker = ImagePicker();
   final GoogleSignIn googleSignIn = GoogleSignIn(
-    clientId: 'YOUR_CLIENT_ID',
+    clientId: '1050701892775-2gnmu9r8hbt6cn8tbho6a4hvr65eietu.apps.googleusercontent.com',
     scopes: [
       'email',
       'profile',
@@ -33,19 +36,7 @@ class Authentication {
   Map<String, TimeOfDay?> _openTimes = {};
   Map<String, TimeOfDay?> _closeTimes = {};
 
-  Authentication() {
-    // Listen to authentication state changes
-    _auth.authStateChanges().listen((User? user) {
-      if (user != null) {
-        // User is signed in
-        print('User is signed in: ${user.email}');
-      } else {
-        // User is signed out
-        print('User is signed out');
-      }
-    });
-  }
-
+  // User Registration
   Future<void> registerUserWithEmailAndPassword(BuildContext context, String email, String password) async {
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
@@ -53,6 +44,7 @@ class Authentication {
         password: password,
       );
 
+      // Save user data to Firestore in the 'users' collection
       await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
         'email': email,
       });
@@ -72,6 +64,7 @@ class Authentication {
     }
   }
 
+  // Shop Registration (Owner Registration)
   Future<void> registerShopWithEmailAndPassword(BuildContext context, String shopName, String email, String password, String registrationGstNumber, Position currentPosition, File profileImage, File bannerImage) async {
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
@@ -82,11 +75,12 @@ class Authentication {
       String profileImageUrl = await _uploadImage(profileImage, 'profile_images');
       String bannerImageUrl = await _uploadImage(bannerImage, 'banner_images');
 
+      // Save shop data to Firestore (you can add more fields as needed)
       await FirebaseFirestore.instance.collection('shops').doc(userCredential.user?.uid).set({
         'shopName': shopName,
         'email': email,
         'registrationGstNumber': registrationGstNumber,
-        'currentPosition': GeoPoint(currentPosition.latitude, currentPosition.longitude),
+        'currentPosition':GeoPoint(currentPosition.latitude, currentPosition.longitude),
         'profileImage': profileImageUrl,
         'bannerImage': bannerImageUrl,
       });
@@ -96,6 +90,12 @@ class Authentication {
           content: Text('Shop registration successful'),
         ),
       );
+      // Navigate to the owner side page upon successful registration
+
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => const Ownerside()),
+      // );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -106,6 +106,7 @@ class Authentication {
     }
   }
 
+  // Sign in with Google
   Future<User?> signInWithGoogle(BuildContext context) async {
     try {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
@@ -119,6 +120,11 @@ class Authentication {
         final UserCredential userCredential = await _auth.signInWithCredential(credential);
 
         if (userCredential.user != null) {
+          // Navigate to Ownerside page upon successful sign-in
+          // Navigator.pushReplacement(
+          //   context,
+          //   MaterialPageRoute(builder: (context) => const Ownerside()),
+          // );
           return userCredential.user;
         }
       }
@@ -130,6 +136,7 @@ class Authentication {
     return null;
   }
 
+  // Sign in with email and password
   Future<User?> signInWithEmailAndPassword(String email, String password) async {
     try {
       UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -138,29 +145,14 @@ class Authentication {
       );
 
       User? user = userCredential.user;
+      if (user != null){
+        await saveUserSession(user);
+      }
+
       return user;
     } catch (e) {
       print('Sign-in failed: $e');
       return null;
-    }
-  }
-
-  Future<void> logout(BuildContext context) async {
-    try {
-      await _auth.signOut();
-      await googleSignIn.signOut();
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Successfully logged out'),
-        ),
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Failed to log out'),
-        ),
-      );
-      print('Logout failed: $e');
     }
   }
 
@@ -187,19 +179,24 @@ class Authentication {
       File profileImage,
       ) async {
     try {
+      // Register the new employee using Firebase Authentication
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
 
+      // Upload the employee profile image and get the URL
       String profileImageUrl = await _uploadImage(profileImage, 'employee_profile_images');
 
-      // Assuming you have a method to get the current shop's ID
-      User? currentUser = _auth.currentUser;
-      if (currentUser != null) {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+      String? userEmail = prefs.getString('email');
+
+      if (userId != null && userEmail != null) {
+        // Save the new employee data to Firestore under the current shop's employees sub-collection
         await FirebaseFirestore.instance
             .collection('shops')
-            .doc(currentUser.uid) // currentUser.uid represents the shop ID
+            .doc(userId)
             .collection('employees')
             .doc(userCredential.user?.uid)
             .set({
@@ -214,6 +211,12 @@ class Authentication {
             content: Text('Employee registration successful'),
           ),
         );
+
+        // Navigate to the owner side page upon successful registration
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(builder: (context) => const Ownerside()),
+        // );
       } else {
         throw Exception('No logged-in user found');
       }
@@ -227,13 +230,19 @@ class Authentication {
     }
   }
 
+
   Future<void> addShopMenuItem(BuildContext context, String name, String price, String time) async {
     try {
-      User? currentUser = _auth.currentUser;
-      if (currentUser != null) {
+      // Get the current logged-in user
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? userId = prefs.getString('userId');
+      String? userEmail = prefs.getString('email');
+
+      if (userId != null && userEmail != null) {
+        // Save menu data to Firestore under the current shop's menu sub-collection
         await FirebaseFirestore.instance
             .collection('shops')
-            .doc(currentUser.uid) // currentUser.uid represents the shop ID
+            .doc(userId)
             .collection('menu')
             .add({
           'menuName': name,
@@ -259,27 +268,36 @@ class Authentication {
     }
   }
 
+
+  Future<void> saveUserSession(User user) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('userId', user.uid);
+    await prefs.setString('email', user.email ?? '');
+  }
+
   Future<void> saveSlotTime(String slotTime) async {
     try {
-      User? currentUser = _auth.currentUser;
-      if (currentUser != null) {
-        var shopRef = FirebaseFirestore.instance.collection('shops').doc(currentUser.uid);
-        var shopDoc = await shopRef.get();
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userId = prefs.getString('userId') ?? '';
 
-        if (shopDoc.exists) {
-          await shopRef.update({
-            'slotTime': slotTime,
-          });
-        } else {
-          await shopRef.set({
-            'slotTime': slotTime,
-          });
-        }
+      // Check if document exists
+      var shopRef = FirebaseFirestore.instance.collection('shops').doc(userId);
+      var shopDoc = await shopRef.get();
 
-        print('Slot time updated successfully');
+      if (shopDoc.exists) {
+        // Document exists, update slotTime
+        await shopRef.update({
+          'slotTime': slotTime,
+        });
       } else {
-        throw Exception('No logged-in user found');
+        // Document doesn't exist, create new document with initial data
+        await shopRef.set({
+          'slotTime': slotTime,
+          // Add other initial fields if needed
+        });
       }
+
+      print('Slot time updated successfully');
     } catch (e) {
       print('Error updating slot time: $e');
     }
@@ -287,46 +305,55 @@ class Authentication {
 
   Future<void> saveShopTimings() async {
     try {
-      User? currentUser = _auth.currentUser;
-      if (currentUser != null) {
-        var shopRef = FirebaseFirestore.instance.collection('shops').doc(currentUser.uid);
-        var shopDoc = await shopRef.get();
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String userId = prefs.getString('userId') ?? '';
 
-        Map<String, Map<String, dynamic>> timings = {};
+      // Check if document exists
+      var shopRef = FirebaseFirestore.instance.collection('shops').doc(userId);
+      var shopDoc = await shopRef.get();
 
-        _selectedDays.forEach((day, isSelected) {
-          if (isSelected) {
-            timings[day] = {
-              'openTime': _combineTime(_openTimes[day]!),
-              'closeTime': _combineTime(_closeTimes[day]!),
-            };
-          } else {
-            timings[day] = {
-              'status': 'closed',
-            };
-          }
-        });
+      // Prepare timings map to store in Firestore
+      Map<String, Map<String, dynamic>> timings = {};
 
-        if (shopDoc.exists) {
-          await shopRef.update({
-            'shopTimings': timings,
-          });
+      _selectedDays.forEach((day, isSelected) {
+        if (isSelected) {
+          timings[day] = {
+            'openTime': _combineTime(_openTimes[day]!), // Combine open hour and minute
+            'closeTime': _combineTime(_closeTimes[day]!), // Combine close hour and minute
+          };
         } else {
-          await shopRef.set({
-            'shopTimings': timings,
-          });
+          timings[day] = {
+            'status': 'closed', // Indicate that the shop is closed on this day
+          };
         }
+      });
 
-        print('Shop timings updated successfully');
+      if (shopDoc.exists) {
+        // Document exists, update shopTimings
+        await shopRef.update({
+          'shopTimings': timings,
+        });
       } else {
-        throw Exception('No logged-in user found');
+        // Document doesn't exist, create new document with initial data
+        await shopRef.set({
+          'shopTimings': timings,
+          // Add other initial fields if needed
+        });
       }
+
+      print('Shop timings updated successfully');
     } catch (e) {
       print('Error updating shop timings: $e');
     }
   }
 
+
+  // Helper function to combine hour and minute into a single TimeOfDay object
   TimeOfDay _combineTime(TimeOfDay time) {
     return TimeOfDay(hour: time.hour, minute: time.minute);
   }
+
+
 }
+
+

@@ -3,7 +3,6 @@ import 'package:saloonshop/Color/colors.dart';
 import 'package:saloonshop/employeemangement.dart';
 import 'package:saloonshop/menumanagement.dart';
 import 'package:saloonshop/ownermanage.dart';
-import 'package:saloonshop/shopprofile.dart';
 
 class Ownerdashboard extends StatefulWidget {
   const Ownerdashboard({super.key});
@@ -79,11 +78,11 @@ class _OwnerdashboardState extends State<Ownerdashboard> {
                       leading: const Icon(Icons.person, color: AppColors.primaryYellow),
                       title: const Text('Profile', style: TextStyle(color: AppColors.primaryYellow)),
                       onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Shopprofile()),
-                        );
+                        // Navigator.pop(context);
+                        // Navigator.push(
+                        //   context,
+                        //   MaterialPageRoute(builder: (context) => const Shopprofile()),
+                        // );
                       },
                     ),
                     ListTile(

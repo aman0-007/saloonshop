@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:saloonshop/Color/colors.dart';
 import 'package:saloonshop/register.dart';
-import 'package:saloonshop/shoplogin.dart';
 import 'package:saloonshop/userlogin.dart';
 
 class Accountoptionpage extends StatefulWidget {
@@ -70,10 +69,10 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                         width: deviceWidth * 0.6, // Set button width to 60% of device width
                         child: ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const Shoplogin()),
-                            );
+                            // Navigator.push(
+                            //   context,
+                            //   MaterialPageRoute(builder: (context) => const Shoplogin()),
+                            // );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primaryYellow, // Blue accent background
