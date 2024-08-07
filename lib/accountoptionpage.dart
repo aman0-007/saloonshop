@@ -22,25 +22,6 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            GestureDetector(
-              child: const Padding(
-                padding: EdgeInsets.only(top: 16,right: 30),
-                child: Text(
-                  "Register",
-                  style: TextStyle(
-                    color: AppColors.primaryYellow,
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const Register()),
-                );
-              },
-            ),
             Expanded(
               child: Center(
                 child: Container(
@@ -69,10 +50,10 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                         width: deviceWidth * 0.6, // Set button width to 60% of device width
                         child: ElevatedButton(
                           onPressed: () {
-                            // Navigator.push(
-                            //   context,
-                            //   MaterialPageRoute(builder: (context) => const Shoplogin()),
-                            // );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const Register()),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.primaryYellow, // Blue accent background
@@ -82,7 +63,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                             padding: const EdgeInsets.symmetric(horizontal: 20.0),
                           ),
                           child: const Text(
-                            "Shop Login",
+                            "Register",
                             style: TextStyle(color: Colors.white),
                           ),
                         ),
@@ -94,7 +75,7 @@ class _AccountoptionpageState extends State<Accountoptionpage> {
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => Userlogin()),
+                              MaterialPageRoute(builder: (context) => const Userlogin()),
                             );
                           },
                           style: OutlinedButton.styleFrom(

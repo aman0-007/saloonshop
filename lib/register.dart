@@ -1,12 +1,8 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:saloonshop/Color/colors.dart';
 import 'package:saloonshop/authentication.dart'; // Replace with correct path to your authentication file
-import 'package:saloonshop/accountoptionpage.dart';
-import 'package:image_picker/image_picker.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -19,11 +15,7 @@ class _RegisterState extends State<Register> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
-  File? _profileImage;
-  File? _bannerImage;
-  final ImagePicker _picker = ImagePicker();
   final Authentication _authentication = Authentication();
-  Position? _currentPosition;
 
   @override
   Widget build(BuildContext context) {
@@ -114,107 +106,6 @@ class _RegisterState extends State<Register> {
                     ],
                   ),
                   const SizedBox(height: 20.0),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      final pickedFile = await _picker.pickImage(
-                        source: ImageSource.gallery,
-                        imageQuality: 50,
-                      );
-                      if (pickedFile != null) {
-                        setState(() {
-                          _profileImage = File(pickedFile.path);
-                        });
-                      }
-                    },
-                    icon: const Icon(Icons.upload),
-                    label: const Text('Upload Profile Image'),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(AppColors.primaryYellow),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                      ),
-                      minimumSize: MaterialStateProperty.all<Size>(
-                        const Size(double.infinity, 0), // full width available
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      final pickedFile = await _picker.pickImage(
-                        source: ImageSource.gallery,
-                        imageQuality: 50,
-                      );
-                      if (pickedFile != null) {
-                        setState(() {
-                          _bannerImage = File(pickedFile.path);
-                        });
-                      }
-                    },
-                    icon: const Icon(Icons.upload),
-                    label: const Text('Upload Banner Image'),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(AppColors.primaryYellow),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                      ),
-                      minimumSize: MaterialStateProperty.all<Size>(
-                        const Size(double.infinity, 0), // full width available
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
-                  ElevatedButton.icon(
-                    onPressed: () async {
-                      try {
-                        // Fetch current location if needed
-                        // Assuming ULocation is a custom service for location
-                        // await _locationService.getCurrentLocation((Position position) {
-                        //   setState(() {
-                        //     _currentPosition = position;
-                        //   });
-                        // });
-
-                        // Optionally, provide feedback to the user
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Location fetched successfully')));
-                      } on Exception catch (e) {
-                        print('Error fetching location: $e');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Failed to fetch location')));
-                      }
-                    },
-                    icon: const Icon(Icons.location_on),
-                    label: const Text('Select Location'),
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all<Color>(AppColors.primaryYellow),
-                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                      ),
-                      padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-                        const EdgeInsets.symmetric(vertical: 12.0, horizontal: 16.0),
-                      ),
-                      minimumSize: MaterialStateProperty.all<Size>(
-                        const Size(double.infinity, 0), // full width available
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 10.0),
                   ElevatedButton(
                     onPressed: () async {
                       String email = _emailController.text;
@@ -224,10 +115,6 @@ class _RegisterState extends State<Register> {
                         await _authentication.registerUserWithEmailAndPassword(context, email, password);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Registration Successful')),
-                        );
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (context) => const Accountoptionpage()),
                         );
                       } catch (e) {
                         // Registration failed, handle error

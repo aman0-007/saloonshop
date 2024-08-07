@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:saloonshop/Color/colors.dart';
 import 'package:saloonshop/authentication.dart';
-import 'package:saloonshop/ownerdashboard.dart';
 import 'package:saloonshop/userdashboard.dart';
 
 class Userlogin extends StatefulWidget {
@@ -34,12 +33,12 @@ class _UserloginState extends State<Userlogin> {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black,
                   blurRadius: 5,
                   spreadRadius: 2,
-                  offset: const Offset(0, 3),
+                  offset: Offset(0, 3),
                 ),
               ],
               border: Border.all(
@@ -167,7 +166,7 @@ class _UserloginState extends State<Userlogin> {
                     if (user != null) {
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) =>  Userdashboard()),
+                        MaterialPageRoute(builder: (context) =>  const Userdashboard()),
                       );
                     }
                   },

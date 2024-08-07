@@ -1,11 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:saloonshop/accountoptionpage.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:saloonshop/ownermanage.dart';
+import 'package:saloonshop/userdashboard.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> main() async {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(); // Initialize Firebase
   runApp(const MyApp());
 }
 
@@ -21,40 +22,41 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: "title"),
+      home: const SplashScreen(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
     Future.delayed(const Duration(seconds: 4), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => const Accountoptionpage()),
+        MaterialPageRoute(builder: (context) => const AuthChecker()),
       );
     });
   }
+
   @override
   Widget build(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     final double deviceHeight = MediaQuery.of(context).size.height;
+
     return Scaffold(
       body: Stack(
         children: [
           Positioned.fill(
             child: Image.asset(
-              'assets/splashscreen/splashscreenimg.webp',
+              'assets/splashscreen/splashscreenimg.webp', // Adjust path as needed
               fit: BoxFit.cover,
             ),
           ),
@@ -79,7 +81,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20), // Clip image to match container's top left circular edge
                 ),
-                child: Image.asset("assets/splashscreen/barber.png"),
+                child: Image.asset("assets/splashscreen/barber.png"), // Adjust path as needed
               ),
             ),
           ),
@@ -123,9 +125,55 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ],
             ),
-          )
+          ),
         ],
       ),
+    );
+  }
+}
+
+class AuthChecker extends StatefulWidget {
+  const AuthChecker({super.key});
+
+  @override
+  _AuthCheckerState createState() => _AuthCheckerState();
+}
+
+class _AuthCheckerState extends State<AuthChecker> {
+  late Future<bool> _isLoggedIn;
+
+  @override
+  void initState() {
+    super.initState();
+    _isLoggedIn = _checkLoginStatus();
+  }
+
+  Future<bool> _checkLoginStatus() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? userId = prefs.getString('userId');
+    print("user id of logged user is : $userId");
+    return userId != null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<bool>(
+      future: _isLoggedIn,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasData) {
+          if (snapshot.data!) {
+            // User is logged in
+            return const Userdashboard(); // Replace with your actual home page widget
+          } else {
+            // User is not logged in
+            return const Accountoptionpage(); // Replace with your actual login page widget
+          }
+        }
+        return const Center(child: Text('Error checking login status'));
+      },
     );
   }
 }

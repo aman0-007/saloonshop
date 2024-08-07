@@ -5,7 +5,7 @@ import 'package:geocoding/geocoding.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class GetLocation extends StatefulWidget {
-  const GetLocation({Key? key}) : super(key: key);
+  const GetLocation({super.key});
 
   @override
   _GetLocationState createState() => _GetLocationState();
@@ -13,12 +13,12 @@ class GetLocation extends StatefulWidget {
 
 class _GetLocationState extends State<GetLocation> {
   late GoogleMapController mapController;
-  LatLng _center = const LatLng(45.521563, -122.677433); // Default center
+  final LatLng _center = const LatLng(45.521563, -122.677433); // Default center
   LatLng _lastMapPosition = const LatLng(45.521563, -122.677433); // Default position
   String _placeName = ""; // Variable to store place name
   String _address = ""; // Variable to store address
 
-  Set<Marker> _markers = {}; // Set of markers for Google Maps
+  final Set<Marker> _markers = {}; // Set of markers for Google Maps
 
   @override
   void initState() {
@@ -199,14 +199,14 @@ class _GetLocationState extends State<GetLocation> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Location'),
+        title: const Text('Select Location'),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.save),
+            icon: const Icon(Icons.save),
             onPressed: _saveLocation,
           ),
           IconButton(
-            icon: Icon(Icons.my_location),
+            icon: const Icon(Icons.my_location),
             onPressed: _goToCurrentLocation,
           ),
         ],
