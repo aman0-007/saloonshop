@@ -4,11 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
+import 'package:saloonshop/accountoptionpage.dart';
 import 'package:saloonshop/location.dart';
 import 'package:saloonshop/shopinfo.dart';
 import 'dart:math' show cos, sqrt, asin;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:saloonshop/userlogin.dart';
 
 class Userdashboard extends StatefulWidget {
   const Userdashboard({super.key});
@@ -140,7 +140,7 @@ class _UserdashboardState extends State<Userdashboard> {
               await _clearSharedPreferences();
               Navigator.of(context).pushReplacement(
                 MaterialPageRoute(
-                  builder: (context) => Userlogin(), // Replace with your login page
+                  builder: (context) => const Accountoptionpage(), // Replace with your login page
                 ),
               );
             },
@@ -227,7 +227,7 @@ class _UserdashboardState extends State<Userdashboard> {
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No favorite shops found.'));
+          return const Center(child: Text('No favorite shops found.'));
         } else {
           return SingleChildScrollView(
             scrollDirection: Axis.horizontal,
@@ -291,11 +291,11 @@ class _UserdashboardState extends State<Userdashboard> {
                   ),
                 ),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Expanded(
                 child: Text(
                   shop['shopName'] ?? 'Shop Name',
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 16.0,
                     fontWeight: FontWeight.bold,
                     color: Colors.white, // Updated text color
@@ -338,7 +338,7 @@ class _UserdashboardState extends State<Userdashboard> {
       final shopsSnapshot = await favoriteShopsQuery.get();
 
       return shopsSnapshot.docs.map((doc) => {
-        ...doc.data() as Map<String, dynamic>,
+        ...doc.data(),
         'docId': doc.id,
       }).toList();
     } catch (e) {

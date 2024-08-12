@@ -17,7 +17,7 @@ class _ShopInfoState extends State<ShopInfo> {
   String? _selectedEmployeeId;
   List<Map<String, dynamic>> _employees = [];
   List<Map<String, dynamic>> _menuItems = [];
-  Set<String> _selectedMenuIds = {};
+  final Set<String> _selectedMenuIds = {};
   String? _bannerImageUrl;
   bool _isFavorite = false;
 
@@ -32,7 +32,7 @@ class _ShopInfoState extends State<ShopInfo> {
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.grey[900],
-      shape: RoundedRectangleBorder(
+      shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
       ),
       builder: (context) {
@@ -77,7 +77,7 @@ class _ShopInfoState extends State<ShopInfo> {
 
       final employees = snapshot.docs.map((doc) => {
         'id': doc.id,
-        ...doc.data() as Map<String, dynamic>,
+        ...doc.data(),
       }).toList();
 
       setState(() {
@@ -98,7 +98,7 @@ class _ShopInfoState extends State<ShopInfo> {
 
       final menuItems = snapshot.docs.map((doc) => {
         'id': doc.id,
-        ...doc.data() as Map<String, dynamic>,
+        ...doc.data(),
       }).toList();
 
       setState(() {
@@ -361,7 +361,7 @@ class _ShopInfoState extends State<ShopInfo> {
     // Calculate the height to allow scrolling even if all items are visible
     final double menuListHeight = deviceHeight * 0.3; // Adjust as needed
 
-    return Container(
+    return SizedBox(
       height: menuListHeight,
       child: SingleChildScrollView(
         child: Column(
@@ -494,7 +494,7 @@ class _ShopInfoState extends State<ShopInfo> {
 
 
   Widget _buildEmployeeList(double deviceWidth) {
-    return Container(
+    return SizedBox(
       height: 150, // Adjust height as needed
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -528,7 +528,7 @@ class _ShopInfoState extends State<ShopInfo> {
                       ),
                     ),
                   ),
-                  SizedBox(height: 8),
+                  const SizedBox(height: 8),
                   Text(
                     employee['employeeName'] ?? '',
                     style: const TextStyle(color: Colors.white),
