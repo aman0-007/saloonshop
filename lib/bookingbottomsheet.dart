@@ -113,15 +113,47 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
       }
     });
 
+
+
     final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
-    await FirebaseFirestore.instance
+
+    // Get reference to the document
+    final docRef = FirebaseFirestore.instance
         .collection('employees')
         .doc(widget.selectedEmployeeId)
-        .collection('slots')
-        .doc(formattedDate)
-        .update({
-      'timeSlots.$time': _selectedTimeSlot == time ? 'available' : 'selected',
-    });
+        .collection('appointments')
+        .doc(DateFormat('MMMM yyyy').format(_selectedDate))
+        .collection('days')
+        .doc(formattedDate);
+
+    try {
+      // Fetch current time slot data
+      final docSnapshot = await docRef.get();
+      final data = docSnapshot.data() as Map<String, dynamic>?;
+      final timeSlotsData = data?['timeSlots'] as Map<String, dynamic>?;
+
+      if (timeSlotsData != null) {
+        final currentStatus = timeSlotsData[time]?['status'] as String? ?? 'available';
+
+        // Determine the new totalBookings value
+        int totalBookings = timeSlotsData[time]?['totalBookings'] as int? ?? 0;
+        if (_selectedTimeSlot == time) {
+          totalBookings += 1; // Increment totalBookings for the selected slot
+        } else {
+          if (currentStatus == 'selected') {
+            totalBookings -= 1; // Decrement totalBookings for previously selected slot
+          }
+        }
+
+        // Update Firestore document
+        await docRef.update({
+          'timeSlots.$time.status': _selectedTimeSlot == time ? 'selected' : 'available',
+          'timeSlots.$time.totalBookings': totalBookings,
+        });
+      }
+    } catch (e) {
+      print('Error updating Firestore: $e');
+    }
   }
 
   @override
@@ -178,6 +210,15 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                   String selectedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
                   String? selectedTimeSlot = _selectedTimeSlot;
 
+                  if (selectedTimeSlot == null) {
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: 'Error',
+                      text: 'Please select a time slot.',
+                    );
+                    return;
+                  }
 
                   try {
                     // Set the status as booked, along with userId, selectedMenuIds, and customer name
@@ -195,13 +236,40 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       'timeSlots.$selectedTimeSlot.customerName': customerName,
                     });
 
+                    Navigator.pop(context); // Close the bottom sheet
+                    Navigator.pop(context); // Close the bottom sheet
+
+
+                    print("=========================Reached here ======================================");
                     // Show success message
                     QuickAlert.show(
                       context: context,
                       type: QuickAlertType.success,
                       title: 'Success',
                       text: 'Booking confirmed!',
+                      autoCloseDuration: Duration(seconds: 2), // Optional: Auto-close the alert after 2 seconds
                     );
+                    // Print the values
+                    print('User ID: $userId');
+                    print('Employee ID: $employeeId');
+                    print('Shop ID: $shopId');
+                    print('Selected Menu IDs: $selectedMenuIds');
+                    print('Selected Date: $selectedDate');
+                    print('Selected Time Slot: $selectedTimeSlot');
+
+
+                    _bookNow(
+                      userId: userId!,
+                      customerName: customerName,
+                      employeeId: employeeId,
+                      shopId: shopId,
+                      selectedMenuIds: selectedMenuIds,
+                      selectedDate: selectedDate,
+                      selectedTimeSlot: selectedTimeSlot,
+                    );
+
+                    print("==========================Message Shown=============================");
+
                   } catch (e) {
                     print('Error updating Firestore: $e');
                     QuickAlert.show(
@@ -209,6 +277,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       type: QuickAlertType.error,
                       title: 'Error',
                       text: 'Failed to confirm booking.',
+                      autoCloseDuration: Duration(seconds: 2), // Optional: Auto-close the alert after 2 seconds
                     );
                   }
 
@@ -220,7 +289,8 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                   print('Selected Date: $selectedDate');
                   print('Selected Time Slot: $selectedTimeSlot');
 
-                  Navigator.pop(context); // Close the bottom sheet
+
+
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.yellow,
@@ -232,20 +302,50 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
-                  shape: RoundedRectangleBorder(
+                  shape
+
+                      : RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
                 child: const Text('Book Now'),
               ),
             )
-
-
-
           ],
         ),
       ),
     );
+  }
+
+  void _bookNow({
+    required String userId,
+    required String customerName,
+    required String? employeeId,
+    required String? shopId,
+    required Set<String> selectedMenuIds,
+    required String selectedDate,
+    required String? selectedTimeSlot,
+  }) async {
+    // Call Cloud Function to send notification
+    try {
+      final response = await FirebaseFirestore.instance
+          .collection('functions')
+          .doc('booksuccessful')
+          .collection('requests')
+          .add({
+        'employeeId': employeeId,
+        'selectedTimeSlot': selectedTimeSlot,
+        'date': selectedDate,
+        'userId': userId,
+        'shopId': shopId,
+        'selectedMenuIds': selectedMenuIds.toList(),
+        'customerName': customerName,
+      });
+
+      print('FCM notification request sent. Response: $response');
+    } catch (e) {
+      print('Error sending FCM notification request: $e');
+    }
   }
 
   Widget _buildDatePicker() {
@@ -337,6 +437,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
       ),
     );
   }
+
 
   Widget _buildTimeSlots() {
     if (_timeSlots.isEmpty) {

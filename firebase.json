@@ -1,1 +1,55 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"saloonshop-5b880","appId":"1:1050701892775:android:ff145dc6b2ba86b5291f82","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"saloonshop-5b880","configurations":{"android":"1:1050701892775:android:ff145dc6b2ba86b5291f82","ios":"1:1050701892775:ios:311596c2d59a5af5291f82","macos":"1:1050701892775:ios:311596c2d59a5af5291f82","web":"1:1050701892775:web:efbe02f13772c94d291f82","windows":"1:1050701892775:web:2dd249c33730e4b4291f82"}}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "saloonshop-5b880",
+          "appId": "1:1050701892775:android:ff145dc6b2ba86b5291f82",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "saloonshop-5b880",
+          "configurations": {
+            "android": "1:1050701892775:android:ff145dc6b2ba86b5291f82",
+            "ios": "1:1050701892775:ios:311596c2d59a5af5291f82",
+            "macos": "1:1050701892775:ios:311596c2d59a5af5291f82",
+            "web": "1:1050701892775:web:efbe02f13772c94d291f82",
+            "windows": "1:1050701892775:web:2dd249c33730e4b4291f82"
+          }
+        }
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    },
+    {
+      "source": "booksuccessful",
+      "codebase": "booksuccessful",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "*.local"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint"
+      ]
+    }
+  ]
+}
