@@ -39,6 +39,7 @@ class _ShopInfoState extends State<ShopInfo> {
         return BookingBottomSheet(
           selectedEmployeeId: _selectedEmployeeId,
           selectedMenuIds: _selectedMenuIds,
+          selectedShopId: widget.docId,
         );
       },
     );

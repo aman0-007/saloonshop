@@ -1,14 +1,18 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:quickalert/quickalert.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingBottomSheet extends StatefulWidget {
   final String? selectedEmployeeId;
+  final String? selectedShopId;
   final Set<String> selectedMenuIds;
 
   const BookingBottomSheet({
     super.key,
     this.selectedEmployeeId,
+    this.selectedShopId,
     required this.selectedMenuIds,
   });
 
@@ -157,19 +161,87 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
             const SizedBox(height: 20),
             Center(
               child: ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
+                  // Get the user ID from SharedPreferences
+                  SharedPreferences prefs = await SharedPreferences.getInstance();
+                  String? userId = prefs.getString('userId');
+                  String customerName = prefs.getString('customerName') ?? 'Unknown';
+
+                  // Get the shop ID from the widget
+                  String? employeeId = widget.selectedEmployeeId;
+                  String? shopId = widget.selectedShopId;
+
+                  // Get the selected menu IDs
+                  Set<String> selectedMenuIds = widget.selectedMenuIds;
+
+                  // Get the selected date and time slot
+                  String selectedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
+                  String? selectedTimeSlot = _selectedTimeSlot;
+
+
+                  try {
+                    // Set the status as booked, along with userId, selectedMenuIds, and customer name
+                    await FirebaseFirestore.instance
+                        .collection('employees')
+                        .doc(employeeId)
+                        .collection('appointments')
+                        .doc(DateFormat('MMMM yyyy').format(_selectedDate))
+                        .collection('days')
+                        .doc(selectedDate)
+                        .update({
+                      'timeSlots.$selectedTimeSlot.status': 'booked',
+                      'timeSlots.$selectedTimeSlot.bookedBy': userId,
+                      'timeSlots.$selectedTimeSlot.selectedMenuIds': selectedMenuIds.toList(),
+                      'timeSlots.$selectedTimeSlot.customerName': customerName,
+                    });
+
+                    // Show success message
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.success,
+                      title: 'Success',
+                      text: 'Booking confirmed!',
+                    );
+                  } catch (e) {
+                    print('Error updating Firestore: $e');
+                    QuickAlert.show(
+                      context: context,
+                      type: QuickAlertType.error,
+                      title: 'Error',
+                      text: 'Failed to confirm booking.',
+                    );
+                  }
+
+                  // Print the values
+                  print('User ID: $userId');
+                  print('Employee ID: $employeeId');
+                  print('Shop ID: $shopId');
+                  print('Selected Menu IDs: $selectedMenuIds');
+                  print('Selected Date: $selectedDate');
+                  print('Selected Time Slot: $selectedTimeSlot');
+
                   Navigator.pop(context); // Close the bottom sheet
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.yellow,
                   foregroundColor: Colors.black,
+                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                  elevation: 5,
+                  shadowColor: Colors.black.withOpacity(0.3),
+                  textStyle: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(30),
                   ),
                 ),
                 child: const Text('Book Now'),
               ),
-            ),
+            )
+
+
+
           ],
         ),
       ),
