@@ -5,7 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:saloonshop/accountoptionpage.dart';
+import 'package:saloonshop/appointments.dart';
 import 'package:saloonshop/location.dart';
+import 'package:saloonshop/notification.dart';
 import 'package:saloonshop/shopinfo.dart';
 import 'dart:math' show cos, sqrt, asin;
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,12 +25,22 @@ class _UserdashboardState extends State<Userdashboard> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   List<Map<String, dynamic>> _nearbyShops = [];
 
+  NotificationServices notificationServices = NotificationServices();
   late Position _currentPosition;
 
   @override
   void initState() {
     super.initState();
     _fetchCurrentUserLocation();
+    notificationServices.requestNotificationPermission();
+
+    notificationServices.isTokenRefresh();
+
+    notificationServices.getDeviceToken().then((value){
+      print("Device Token");
+      print(value);
+
+    });
   }
 
   Future<void> _fetchCurrentUserLocation() async {
@@ -125,7 +137,16 @@ class _UserdashboardState extends State<Userdashboard> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Icon(Icons.notifications, color: Colors.grey.withOpacity(0.7)),
+          IconButton(
+            icon: Icon(Icons.notifications, color: Colors.grey.withOpacity(0.7)),
+            onPressed: () async {
+              Navigator.of(context).pushReplacement(
+                MaterialPageRoute(
+                  builder: (context) => const Appointments(), // Replace with your login page
+                ),
+              );
+            },
+          ),
           Text(
             formattedDate,
             style: TextStyle(
@@ -135,7 +156,7 @@ class _UserdashboardState extends State<Userdashboard> {
             ),
           ),
           IconButton(
-            icon: Icon(Icons.settings, color: Colors.grey.withOpacity(0.7)),
+            icon: Icon(Icons.logout, color: Colors.grey.withOpacity(0.7)),
             onPressed: () async {
               await _clearSharedPreferences();
               Navigator.of(context).pushReplacement(

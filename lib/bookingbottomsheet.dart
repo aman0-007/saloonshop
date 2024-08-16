@@ -1,7 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:quickalert/quickalert.dart';
+import 'package:saloonshop/notification.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingBottomSheet extends StatefulWidget {
@@ -24,6 +27,8 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
   DateTime _selectedDate = DateTime.now();
   Map<String, String> _timeSlots = {};
   String? _selectedTimeSlot;
+
+  final NotificationServices notificationServices = NotificationServices();
 
   final List<DateTime> _dateOptions = List.generate(
     7,
@@ -113,14 +118,12 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
       }
     });
 
-
-
     final formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
 
     // Get reference to the document
     final docRef = FirebaseFirestore.instance
         .collection('employees')
-        .doc(widget.selectedEmployeeId)
+        .doc(widget.selectedEmployeeId!)
         .collection('appointments')
         .doc(DateFormat('MMMM yyyy').format(_selectedDate))
         .collection('days')
@@ -136,7 +139,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         final currentStatus = timeSlotsData[time]?['status'] as String? ?? 'available';
 
         // Determine the new totalBookings value
-        int totalBookings = timeSlotsData[time]?['totalBookings'] as int? ?? 0;
+        int totalBookings = data?['totalBookings'] as int? ?? 0;
         if (_selectedTimeSlot == time) {
           totalBookings += 1; // Increment totalBookings for the selected slot
         } else {
@@ -148,7 +151,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
         // Update Firestore document
         await docRef.update({
           'timeSlots.$time.status': _selectedTimeSlot == time ? 'selected' : 'available',
-          'timeSlots.$time.totalBookings': totalBookings,
+          'totalBookings': totalBookings,
         });
       }
     } catch (e) {
@@ -236,6 +239,38 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       'timeSlots.$selectedTimeSlot.customerName': customerName,
                     });
 
+                    // Save to appointments in users collection
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(userId)
+                        .collection('appointments')
+                        .doc(selectedDate)
+                        .set({
+                      'employeeId': employeeId,
+                      'shopId': shopId,
+                      'selectedMenuIds': selectedMenuIds.toList(),
+                      'selectedDate': selectedDate,
+                      'selectedTimeSlot': selectedTimeSlot,
+                      'customerName': customerName,
+                      'status': 'booked',
+                    });
+
+                    // Save to appointments in shops collection
+                    await FirebaseFirestore.instance
+                        .collection('shops')
+                        .doc(shopId)
+                        .collection('appointments')
+                        .doc(selectedDate)
+                        .set({
+                      'employeeId': employeeId,
+                      'userId': userId,
+                      'selectedMenuIds': selectedMenuIds.toList(),
+                      'selectedDate': selectedDate,
+                      'selectedTimeSlot': selectedTimeSlot,
+                      'customerName': customerName,
+                      'status': 'booked',
+                    });
+
                     Navigator.pop(context); // Close the bottom sheet
                     Navigator.pop(context); // Close the bottom sheet
 
@@ -258,18 +293,27 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                     print('Selected Time Slot: $selectedTimeSlot');
 
 
-                    _bookNow(
-                      userId: userId!,
-                      customerName: customerName,
-                      employeeId: employeeId,
-                      shopId: shopId,
-                      selectedMenuIds: selectedMenuIds,
-                      selectedDate: selectedDate,
-                      selectedTimeSlot: selectedTimeSlot,
-                    );
+                    // Get the employee's FCM token from Firestore
+                    DocumentSnapshot employeeSnapshot = await FirebaseFirestore.instance
+                        .collection('employees')
+                        .doc(employeeId)
+                        .get();
+
+                    String? employeeFcmToken = employeeSnapshot['fcmToken'];
+
+                    if (employeeFcmToken == null) {
+                      print('Error: Employee FCM token not found');
+                      return;
+                    }
+                    print(employeeFcmToken);
 
                     print("==========================Message Shown=============================");
 
+                    await notificationServices.sendNotification(
+                      deviceToken: employeeFcmToken, // Replace with actual device token
+                      title: 'Booking Confirmed',
+                      body: 'You have a new booking on ${DateFormat('yyyy-MM-dd').format(_selectedDate)} at $_selectedTimeSlot.',
+                    );
                   } catch (e) {
                     print('Error updating Firestore: $e');
                     QuickAlert.show(
@@ -317,36 +361,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
     );
   }
 
-  void _bookNow({
-    required String userId,
-    required String customerName,
-    required String? employeeId,
-    required String? shopId,
-    required Set<String> selectedMenuIds,
-    required String selectedDate,
-    required String? selectedTimeSlot,
-  }) async {
-    // Call Cloud Function to send notification
-    try {
-      final response = await FirebaseFirestore.instance
-          .collection('functions')
-          .doc('booksuccessful')
-          .collection('requests')
-          .add({
-        'employeeId': employeeId,
-        'selectedTimeSlot': selectedTimeSlot,
-        'date': selectedDate,
-        'userId': userId,
-        'shopId': shopId,
-        'selectedMenuIds': selectedMenuIds.toList(),
-        'customerName': customerName,
-      });
 
-      print('FCM notification request sent. Response: $response');
-    } catch (e) {
-      print('Error sending FCM notification request: $e');
-    }
-  }
 
   Widget _buildDatePicker() {
     return Container(
