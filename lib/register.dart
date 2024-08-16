@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:saloonshop/Color/colors.dart';
@@ -12,6 +11,7 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
+  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   bool _isPasswordVisible = false;
@@ -38,6 +38,32 @@ class _RegisterState extends State<Register> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 20.0),
+                  // Name Field
+                  TextFormField(
+                    controller: _nameController,
+                    decoration: InputDecoration(
+                      hintText: 'Name',
+                      hintStyle: TextStyle(
+                          color: AppColors.primaryYellow.withOpacity(0.5)),
+                      border: OutlineInputBorder(
+                        borderSide: BorderSide(
+                            color: Colors.grey.withOpacity(0.5), width: 1.0),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: const BorderSide(
+                            color: AppColors.primaryYellow, width: 2.0),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey.withOpacity(0.1),
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 12, horizontal: 16),
+                    ),
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                  const SizedBox(height: 10.0),
+                  // Email Field
                   TextFormField(
                     controller: _emailController,
                     decoration: InputDecoration(
@@ -62,6 +88,7 @@ class _RegisterState extends State<Register> {
                     style: const TextStyle(color: Colors.white),
                   ),
                   const SizedBox(height: 10.0),
+                  // Password Field
                   Stack(
                     alignment: Alignment.centerRight,
                     children: [
@@ -108,11 +135,12 @@ class _RegisterState extends State<Register> {
                   const SizedBox(height: 20.0),
                   ElevatedButton(
                     onPressed: () async {
+                      String name = _nameController.text;
                       String email = _emailController.text;
                       String password = _passwordController.text;
                       try {
                         // Implement user registration logic
-                        await _authentication.registerUserWithEmailAndPassword(context, email, password);
+                        await _authentication.registerUserWithEmailAndPassword(context,name, email, password);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Registration Successful')),
                         );

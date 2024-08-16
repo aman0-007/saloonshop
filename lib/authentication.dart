@@ -10,7 +10,7 @@ class Authentication {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   // User Registration
-  Future<void> registerUserWithEmailAndPassword(BuildContext context, String email, String password) async {
+  Future<void> registerUserWithEmailAndPassword(BuildContext context, String name, String email, String password) async {
     try {
       UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -20,6 +20,7 @@ class Authentication {
       // Save user data to Firestore in the 'users' collection
       await FirebaseFirestore.instance.collection('users').doc(userCredential.user?.uid).set({
         'email': email,
+        'name': name,
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
