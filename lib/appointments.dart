@@ -120,6 +120,10 @@ class _AppointmentsState extends State<Appointments> {
                       'Status: ${appointment['status']}',
                       style: TextStyle(color: textColor),
                     ),
+                    Text(
+                      'Booking ID: ${appointment['bookingId']}',
+                      style: TextStyle(color: textColor),
+                    ),
                   ],
                 ),
               );

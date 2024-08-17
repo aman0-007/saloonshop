@@ -213,6 +213,8 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                   String selectedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
                   String? selectedTimeSlot = _selectedTimeSlot;
 
+                  // Generate a unique booking ID
+                  String bookingId = '${selectedDate}_${selectedTimeSlot}_${userId}';
                   if (selectedTimeSlot == null) {
                     QuickAlert.show(
                       context: context,
@@ -224,7 +226,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                   }
 
                   try {
-                    // Set the status as booked, along with userId, selectedMenuIds, and customer name
+                    // Update Firestore with booking details under the selected date and time slot
                     await FirebaseFirestore.instance
                         .collection('employees')
                         .doc(employeeId)
@@ -237,30 +239,19 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       'timeSlots.$selectedTimeSlot.bookedBy': userId,
                       'timeSlots.$selectedTimeSlot.selectedMenuIds': selectedMenuIds.toList(),
                       'timeSlots.$selectedTimeSlot.customerName': customerName,
+                      'timeSlots.$selectedTimeSlot.bookingId': bookingId,
                     });
 
-                    // Save to appointments in users collection
-                    await FirebaseFirestore.instance
-                        .collection('users')
-                        .doc(userId)
-                        .collection('appointments')
-                        .doc(selectedDate)
-                        .set({
-                      'employeeId': employeeId,
-                      'shopId': shopId,
-                      'selectedMenuIds': selectedMenuIds.toList(),
-                      'selectedDate': selectedDate,
-                      'selectedTimeSlot': selectedTimeSlot,
-                      'customerName': customerName,
-                      'status': 'booked',
-                    });
-
-                    // Save to appointments in shops collection
+                    // Save appointment to users collection
                     await FirebaseFirestore.instance
                         .collection('shops')
                         .doc(shopId)
                         .collection('appointments')
+                        .doc(DateFormat('MMMM yyyy').format(_selectedDate))
+                        .collection('days')
                         .doc(selectedDate)
+                        .collection('timeSlots')
+                        .doc(bookingId)  // Use bookingId as document ID
                         .set({
                       'employeeId': employeeId,
                       'userId': userId,
@@ -269,13 +260,33 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       'selectedTimeSlot': selectedTimeSlot,
                       'customerName': customerName,
                       'status': 'booked',
+                      'bookingId': bookingId,
                     });
 
-                    Navigator.pop(context); // Close the bottom sheet
-                    Navigator.pop(context); // Close the bottom sheet
+
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(userId)
+                        .collection('appointments')
+                        .doc(DateFormat('MMMM yyyy').format(_selectedDate))
+                        .collection('days')
+                        .doc(selectedDate)
+                        .collection('timeSlots')
+                        .doc(bookingId)  // Use bookingId as document ID
+                        .set({
+                      'employeeId': employeeId,
+                      'shopId': shopId,
+                      'selectedMenuIds': selectedMenuIds.toList(),
+                      'selectedDate': selectedDate,
+                      'selectedTimeSlot': selectedTimeSlot,
+                      'customerName': customerName,
+                      'status': 'booked',
+                      'bookingId': bookingId,
+                    });
 
 
-                    print("=========================Reached here ======================================");
+                    Navigator.pop(context); // Close the bottom sheet
+
                     // Show success message
                     QuickAlert.show(
                       context: context,
@@ -284,6 +295,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       text: 'Booking confirmed!',
                       autoCloseDuration: Duration(seconds: 2), // Optional: Auto-close the alert after 2 seconds
                     );
+
                     // Print the values
                     print('User ID: $userId');
                     print('Employee ID: $employeeId');
@@ -291,7 +303,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                     print('Selected Menu IDs: $selectedMenuIds');
                     print('Selected Date: $selectedDate');
                     print('Selected Time Slot: $selectedTimeSlot');
-
+                    print('Booking ID: $bookingId');
 
                     // Get the employee's FCM token from Firestore
                     DocumentSnapshot employeeSnapshot = await FirebaseFirestore.instance
@@ -305,14 +317,12 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       print('Error: Employee FCM token not found');
                       return;
                     }
-                    print(employeeFcmToken);
 
-                    print("==========================Message Shown=============================");
-
+                    // Send notification
                     await notificationServices.sendNotification(
                       deviceToken: employeeFcmToken, // Replace with actual device token
                       title: 'Booking Confirmed',
-                      body: 'You have a new booking on ${DateFormat('yyyy-MM-dd').format(_selectedDate)} at $_selectedTimeSlot.',
+                      body: 'You have a new booking on ${DateFormat('yyyy-MM-dd').format(_selectedDate)} at $selectedTimeSlot. Booking ID: $bookingId',
                     );
                   } catch (e) {
                     print('Error updating Firestore: $e');
@@ -324,17 +334,6 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                       autoCloseDuration: Duration(seconds: 2), // Optional: Auto-close the alert after 2 seconds
                     );
                   }
-
-                  // Print the values
-                  print('User ID: $userId');
-                  print('Employee ID: $employeeId');
-                  print('Shop ID: $shopId');
-                  print('Selected Menu IDs: $selectedMenuIds');
-                  print('Selected Date: $selectedDate');
-                  print('Selected Time Slot: $selectedTimeSlot');
-
-
-
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.yellow,
@@ -346,9 +345,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                   ),
-                  shape
-
-                      : RoundedRectangleBorder(
+                  shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),
                 ),
@@ -360,6 +357,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
       ),
     );
   }
+
 
 
 
