@@ -29,6 +29,15 @@ class _ShopInfoState extends State<ShopInfo> {
   }
 
   void _showBookingBottomSheet() {
+    final selectedMenuItems = _menuItems
+        .where((menuItem) => _selectedMenuIds.contains(menuItem['id']))
+        .map((menuItem) => {
+      'id': menuItem['id'],
+      'menuName': menuItem['menuName'],
+      'menuPrice': menuItem['menuPrice'],
+    })
+        .toList();
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.grey[900],
@@ -38,12 +47,13 @@ class _ShopInfoState extends State<ShopInfo> {
       builder: (context) {
         return BookingBottomSheet(
           selectedEmployeeId: _selectedEmployeeId,
-          selectedMenuIds: _selectedMenuIds,
+          selectedMenuItems: selectedMenuItems,
           selectedShopId: widget.docId,
         );
       },
     );
   }
+
 
 
   Future<void> _fetchShopDetails() async {

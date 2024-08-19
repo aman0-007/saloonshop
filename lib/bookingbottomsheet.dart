@@ -10,13 +10,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class BookingBottomSheet extends StatefulWidget {
   final String? selectedEmployeeId;
   final String? selectedShopId;
-  final Set<String> selectedMenuIds;
+  final List<Map<String, dynamic>> selectedMenuItems;
 
   const BookingBottomSheet({
     super.key,
     this.selectedEmployeeId,
     this.selectedShopId,
-    required this.selectedMenuIds,
+    required this.selectedMenuItems,
   });
 
   @override
@@ -206,8 +206,15 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                   String? employeeId = widget.selectedEmployeeId;
                   String? shopId = widget.selectedShopId;
 
-                  // Get the selected menu IDs
-                  Set<String> selectedMenuIds = widget.selectedMenuIds;
+
+                  // Create a map to store the details of the selected menu items
+                  List<Map<String, dynamic>> selectedMenuItemsDetails = widget.selectedMenuItems.map((menuItem) {
+                    return {
+                      'id': menuItem['id'] as String? ?? '',
+                      'name': menuItem['menuName'] as String? ?? '',
+                      'price': menuItem['menuPrice'] as String? ?? '',
+                    };
+                  }).toList();
 
                   // Get the selected date and time slot
                   String selectedDate = DateFormat('yyyy-MM-dd').format(_selectedDate);
@@ -237,7 +244,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                         .update({
                       'timeSlots.$selectedTimeSlot.status': 'booked',
                       'timeSlots.$selectedTimeSlot.bookedBy': userId,
-                      'timeSlots.$selectedTimeSlot.selectedMenuIds': selectedMenuIds.toList(),
+                      'timeSlots.$selectedTimeSlot.selectedMenuIds': selectedMenuItemsDetails,
                       'timeSlots.$selectedTimeSlot.customerName': customerName,
                       'timeSlots.$selectedTimeSlot.bookingId': bookingId,
                     });
@@ -255,7 +262,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                         .set({
                       'employeeId': employeeId,
                       'userId': userId,
-                      'selectedMenuIds': selectedMenuIds.toList(),
+                      'selectedMenuIds': selectedMenuItemsDetails,
                       'selectedDate': selectedDate,
                       'selectedTimeSlot': selectedTimeSlot,
                       'customerName': customerName,
@@ -276,7 +283,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                         .set({
                       'employeeId': employeeId,
                       'shopId': shopId,
-                      'selectedMenuIds': selectedMenuIds.toList(),
+                      'selectedMenuIds': selectedMenuItemsDetails,
                       'selectedDate': selectedDate,
                       'selectedTimeSlot': selectedTimeSlot,
                       'customerName': customerName,
@@ -300,7 +307,7 @@ class _BookingBottomSheetState extends State<BookingBottomSheet> {
                     print('User ID: $userId');
                     print('Employee ID: $employeeId');
                     print('Shop ID: $shopId');
-                    print('Selected Menu IDs: $selectedMenuIds');
+                    print('Selected Menu IDs: $selectedMenuItemsDetails');
                     print('Selected Date: $selectedDate');
                     print('Selected Time Slot: $selectedTimeSlot');
                     print('Booking ID: $bookingId');
